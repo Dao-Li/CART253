@@ -83,7 +83,7 @@ function setup() {
 
   // Start the wave image off the screen at the middle top
   waveX = width/2;
-  waveY = 0 - 700;
+  waveY = 0 - 600;
 
   // We'll draw rectangles from the center
   rectMode(CENTER);
@@ -93,6 +93,9 @@ function setup() {
   textFont("Montserrat");
   // We won't have a stroke in this
   noStroke();
+ // We want a frame Rate slower than default
+  frameRate(40)
+
 }
 
 
@@ -135,8 +138,9 @@ function draw() {
   text(crossing,crossingX,crossingY);
   textSize(crossingSize);
 
-  // Move the wave image center up to down
-  waveY += 0.75
+  // Move the wave image center up to down in zigag
+  waveY += 0.75;
+  waveX = random (0,500);
   // Display of the wave. We'll have the image of a mouse following the mouse
   image(waveImage,waveX,waveY,waveImage.width * waveScale,waveImage.height * waveScale);
 
@@ -144,5 +148,8 @@ function draw() {
   mouse1X = mouseX
   mouse1Y = mouseY
   // Display of the image. We'll have the image of a mouse following the mouse
-  image(mouse1Image,mouse1X,mouse1Y,mouse1Image.width * mouseScale,mouse1Image.height* mouseScale);
+  image(mouse1Image,mouse1X,mouse1Y,mouse1Image.width * mouseScale,mouse1Image.height*
+     mouseScale);
+
+
   }

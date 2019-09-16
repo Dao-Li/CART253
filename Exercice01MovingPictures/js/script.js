@@ -35,12 +35,19 @@ let mouseScale = 0.05;
 let mouse1X;
 let mouse1Y;
 
+// The image choice, the position and size of the image
+let waveImage;
+let waveScale = .75;
+let waveX;
+let waveY;
+
 // preload()
 //
 // Preload of the image mouse
 
 function preload() {
 mouse1Image = loadImage('assets/images/mouse.png');
+waveImage = loadImage('assets/images/wave.png');
 }
 
 
@@ -64,14 +71,19 @@ function setup() {
   squareY = height + squareSize/2;
 
   // Start the text off screen to the center left
-  // In X, I remove some pixels to make sure the text start off screen
+  // In X, we remove some pixels to make sure the text start off screen
   crossingX = 0 - 300;
   crossingY = height/2;
 
   // Start the text off screen to the center left (under the text)
   // We divide the size by two because we're drawing from the center
-  rectangleX = 0 - rectangleWidth/2;
+  // In X, we remove some pixels to make sure the text start off screen
+  rectangleX = 0 - rectangleWidth/2 - 20;
   rectangleY = height/2;
+
+  // Start the wave image off the screen at the middle top
+  waveX = width/2;
+  waveY = 0 - 700;
 
   // We'll draw rectangles from the center
   rectMode(CENTER);
@@ -91,10 +103,6 @@ function setup() {
 
 function draw() {
   // We don't fill the background so we get a drawing effect
-
-  // Background transparent white so we get a drawing effect
-  // that vanished a little bit with time
-  background (255,255,255,2);
 
   // Move circle up and to the right
   circleX += 1;
@@ -127,9 +135,14 @@ function draw() {
   text(crossing,crossingX,crossingY);
   textSize(crossingSize);
 
+  // Move the wave image center up to down
+  waveY += 0.75
+  // Display of the wave. We'll have the image of a mouse following the mouse
+  image(waveImage,waveX,waveY,waveImage.width * waveScale,waveImage.height * waveScale);
+
   // the image will follow the mouse
   mouse1X = mouseX
   mouse1Y = mouseY
   // Display of the image. We'll have the image of a mouse following the mouse
   image(mouse1Image,mouse1X,mouse1Y,mouse1Image.width * mouseScale,mouse1Image.height* mouseScale);
-}
+  }

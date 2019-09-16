@@ -1,3 +1,5 @@
+//Dao-Li leboeuf Roy (40097085)
+//
 // Exercise 1 - Movement
 // Pippin Barr
 //
@@ -15,6 +17,17 @@ let squareX;
 let squareY;
 let squareSize = 100;
 
+//The display text, current position and the size of the text
+let crossing = "Crossing...";
+let crossingX = 0;
+let crossingY = 0;
+let crossingSize = 50;
+
+// The current position and size of the square that goes under the text
+let rectangleX = 0
+let rectangleY = 0
+let rectangleHeight = 60
+let rectangleWidth = 200
 
 // preload()
 //
@@ -43,8 +56,20 @@ function setup() {
   squareX = width + squareSize/2;
   squareY = height + squareSize/2;
 
+  // Start the text off screen to the center left
+  // In X, I remove some pixels to make sure the text start off screen
+  crossingX = 0 - 300;
+  crossingY = height/2;
+
+  // Start the text off screen to the center left (under the text)
+  // We divide the size by two because we're drawing from the center
+  rectangleX = 0 - rectangleWidth/2;
+  rectangleY = height/2;
+
   // We'll draw rectangles from the center
   rectMode(CENTER);
+  //We'll display the text in Montserrat
+  textFont("Montserrat");
   // We won't have a stroke in this
   noStroke();
 }
@@ -73,4 +98,20 @@ function draw() {
   fill(0,0,255,10);
   // Display the square
   rect(squareX,squareY,squareSize,squareSize);
+
+  // Move the rectangle (under the text) center left to right
+  rectangleX += 1
+  // Make the rectangle transparent yellow/orange
+  fill(255,174,0,25)
+  // Display the rectangle
+  rect(rectangleX,rectangleY,rectangleWidth,rectangleHeight)
+
+
+  // Move the text center left to right
+  crossingX += 1.25
+  // Make the text green
+  fill(0,255,0)
+  // Display the textFont
+  text(crossing,crossingX,crossingY)
+  textSize(crossingSize)
 }

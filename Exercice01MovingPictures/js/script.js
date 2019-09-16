@@ -24,17 +24,23 @@ let crossingY = 0;
 let crossingSize = 50;
 
 // The current position and size of the square that goes under the text
-let rectangleX = 0
-let rectangleY = 0
-let rectangleHeight = 60
-let rectangleWidth = 200
+let rectangleX = 0;
+let rectangleY = 0;
+let rectangleHeight = 60;
+let rectangleWidth = 200;
+
+// The image choice, the position and size of the image
+let mouse1Image;
+let mouseScale = 0.05;
+let mouse1X;
+let mouse1Y;
 
 // preload()
 //
-// Nothing here
+// Preload of the image mouse
 
 function preload() {
-
+mouse1Image = loadImage('assets/images/mouse.png');
 }
 
 
@@ -45,6 +51,7 @@ function preload() {
 function setup() {
   // Create our canvas
   createCanvas(640,640);
+
 
   // Start the circle off screen to the bottom left
   // We divide the size by two because we're drawing from the center
@@ -68,6 +75,8 @@ function setup() {
 
   // We'll draw rectangles from the center
   rectMode(CENTER);
+  //We'll draw the image from the center
+  imageMode(CENTER)
   //We'll display the text in Montserrat
   textFont("Montserrat");
   // We won't have a stroke in this
@@ -82,6 +91,10 @@ function setup() {
 
 function draw() {
   // We don't fill the background so we get a drawing effect
+
+  // Background transparent white so we get a drawing effect
+  // that vanished a little bit with time
+  background (255,255,255,2);
 
   // Move circle up and to the right
   circleX += 1;
@@ -100,18 +113,23 @@ function draw() {
   rect(squareX,squareY,squareSize,squareSize);
 
   // Move the rectangle (under the text) center left to right
-  rectangleX += 1
+  rectangleX += 1;
   // Make the rectangle transparent yellow/orange
-  fill(255,174,0,25)
+  fill(255,174,0,25);
   // Display the rectangle
-  rect(rectangleX,rectangleY,rectangleWidth,rectangleHeight)
-
+  rect(rectangleX,rectangleY,rectangleWidth,rectangleHeight);
 
   // Move the text center left to right
-  crossingX += 1.25
+  crossingX += 1.25;
   // Make the text green
-  fill(0,255,0)
+  fill(0,255,0);
   // Display the textFont
-  text(crossing,crossingX,crossingY)
-  textSize(crossingSize)
+  text(crossing,crossingX,crossingY);
+  textSize(crossingSize);
+
+  // the image will follow the mouse
+  mouse1X = mouseX
+  mouse1Y = mouseY
+  // Display of the image. We'll have the image of a mouse following the mouse
+  image(mouse1Image,mouse1X,mouse1Y,mouse1Image.width * mouseScale,mouse1Image.height* mouseScale);
 }

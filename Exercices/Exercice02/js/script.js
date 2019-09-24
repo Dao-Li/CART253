@@ -54,12 +54,12 @@ function setup() {
   avatarY = height/2;
 
   // We want to have LemonMilk font and bold and a big large size
-  textFont(lemonMilk)
-  textStyle(BOLD)
-  textSize(25)
+  textFont(lemonMilk);
+  textStyle(BOLD);
+  textSize(25);
   // We want the text at the top right corner of the screen
-  successfulDodgesX = width/3
-  successfulDodgesY = height/12
+  successfulDodgesX = width/3;
+  successfulDodgesY = height/12;
 
 
   // Put the enemy to the left at a random y coordinate within the canvas
@@ -127,6 +127,10 @@ function draw() {
     avatarY = height/2;
     // Reset the dodge counter
     dodges = 0;
+    // Reset the enemy size
+    enemySize = 50;
+    // Reset the enemy speed
+    enemySpeed = 5;
   }
 
   // Check if the avatar has gone off the screen (cheating!)
@@ -138,6 +142,8 @@ function draw() {
     avatarX = width/2;
     avatarY = height/2;
     dodges = 0;
+    enemySize = 50;
+    enemySpeed = 5;
   }
 
   // Check if the enemy has moved all the way across the screen
@@ -149,6 +155,10 @@ function draw() {
     // Reset the enemy's position to the left at a random height
     enemyX = 0;
     enemyY = random(0,height);
+    // The enemy size should increase
+    enemySize += 5;
+    // The enemy speed should increase too
+    enemySpeed += 0.5;
   }
 
   // Display the number of successful dodges in the console
@@ -166,9 +176,9 @@ function draw() {
 
 
   // We want to display the number of successful dodges
-  successfulDodges = "SUCCESSFUL dodge(s): " + dodges
+  successfulDodges = "SUCCESSFUL dodge(s): " + dodges;
   // The text is in dark green
-  fill(46,128,67)
+  fill(46,128,67);
   // Display the text
   text(successfulDodges,successfulDodgesX,successfulDodgesY);
 

@@ -1,9 +1,10 @@
 /******************************************************
 
 Game - The Artful Dodger
-Pippin Barr
+Dao-Li Leboeuf (40097085)
 
-A simple dodging game with keyboard controls
+Modification of a simple dodging game with keyboard controls
+The dodge game now display the number of successful dodges at the top.
 
 ******************************************************/
 
@@ -29,6 +30,18 @@ let enemyVX = 5;
 // How many dodges the player has made
 let dodges = 0;
 
+// The text displaying the number of successful dodges and its properties
+let successfulDodges;
+let lemonMilk;
+let successfulDodgesX = 0;
+let successfulDodgesY = 0;
+
+// preload()
+
+function preload() {
+  lemonMilk = loadFont("assets/text/LemonMilk.otf");
+}
+
 // setup()
 //
 // Make the canvas, position the avatar and anemy
@@ -40,12 +53,23 @@ function setup() {
   avatarX = width/2;
   avatarY = height/2;
 
+  // We want to have LemonMilk font and bold and a big large size
+  textFont(lemonMilk)
+  textStyle(BOLD)
+  textSize(25)
+  // We want the text at the top right corner of the screen
+  successfulDodgesX = width/3
+  successfulDodgesY = height/12
+
+
   // Put the enemy to the left at a random y coordinate within the canvas
   enemyX = 0;
   enemyY = random(0,height);
 
   // No stroke so it looks cleaner
   noStroke();
+
+
 }
 
 // draw()
@@ -139,5 +163,14 @@ function draw() {
   fill(255,0,0);
   // Draw the enemy as a circle
   ellipse(enemyX,enemyY,enemySize,enemySize);
+
+
+  // We want to display the number of successful dodges
+  successfulDodges = "SUCCESSFUL dodge(s): " + dodges
+  // The text is in dark green
+  fill(46,128,67)
+  // Display the text
+  text(successfulDodges,successfulDodgesX,successfulDodgesY);
+
 
 }

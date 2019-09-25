@@ -4,27 +4,31 @@ Game - The Artful Dodger
 Dao-Li Leboeuf (40097085)
 
 Modification of a simple dodging game with keyboard controls
-The dodge game now display the number of successful dodges at the top.
+The dodge game now display the number of successful dodges at the bottom.
+Now the enemy's size and speed both also change if the player win.
+They both are reset if the player loses.
 
 ******************************************************/
 
-// The position and size of our avatar circle
+// The position and scale of our avatar image (cat)
+let cat;
 let avatarX;
 let avatarY;
-let avatarSize = 50;
+let avatarScale = 0.05;
 
-// The speed and velocity of our avatar circle
+// The speed and velocity of our avatar
 let avatarSpeed = 10;
 let avatarVX = 0;
 let avatarVY = 0;
 
-// The position and size of the enemy circle
+// The position and scale of the enemy image (lion)
+let lion;
 let enemyX;
 let enemyY;
-let enemySize = 50;
+let enemyScale = 0.05;
 
 // The speed and velocity of our enemy circle
-let enemySpeed = 5;
+let enemySpeed = 3;
 let enemyVX = 5;
 
 // How many dodges the player has made
@@ -36,10 +40,28 @@ let lemonMilk;
 let successfulDodgesX = 0;
 let successfulDodgesY = 0;
 
+// The rectangle (below text) position and size
+let rectangle;
+let rectangleWidth;
+let rectangleHeight;
+let rectangleX;
+let rectangleY;
+
+
+// Background (jungle image), its position and its scale
+let jungle;
+let jungleX;
+let jungleY;
+let jungleScale = 0.2;
+
 // preload()
+// preload of images and font
 
 function preload() {
   lemonMilk = loadFont("assets/text/LemonMilk.otf");
+  cat = loadImage("assets/images/cat.png")
+  lion = loadImage("assets/images/lion.png")
+  jungle = loadImage("assets/images/jungle.jpg")
 }
 
 // setup()
@@ -53,23 +75,30 @@ function setup() {
   avatarX = width/2;
   avatarY = height/2;
 
+  // Put the background in the middle
+  jungleX = width/2;
+  jungleY = height/2;
+
   // We want to have LemonMilk font and bold and a big large size
   textFont(lemonMilk);
   textStyle(BOLD);
   textSize(25);
-  // We want the text at the top right corner of the screen
-  successfulDodgesX = width/3;
-  successfulDodgesY = height/12;
-
+  // We want the text at the bottom right corner of the screen
+  successfulDodgesX = width/1.7;
+  successfulDodgesY = height/1.1;
 
   // Put the enemy to the left at a random y coordinate within the canvas
   enemyX = 0;
   enemyY = random(0,height);
 
+  // Draw the images from the center
+  imageMode(CENTER)
+  // Draw the text from the center
+  textAlign(CENTER,CENTER)
+  // Draw the rectangle from the center
+  rectMode(CENTER)
   // No stroke so it looks cleaner
   noStroke();
-
-
 }
 
 // draw()
@@ -77,8 +106,8 @@ function setup() {
 // Handle moving the avatar and enemy and checking for dodges and
 // game over situations.
 function draw() {
-  // A pink background
-  background(255,220,220);
+  // A jungle as a background
+  image(jungle,jungleX,jungleY, jungle.width * jungleScale, jungle.height *jungleScale);
 
   // Default the avatar's velocity to 0 in case no key is pressed this frame
   avatarVX = 0;
@@ -115,8 +144,8 @@ function draw() {
 
   // Check if the enemy and avatar overlap - if they do the player loses
   // We do this by checking if the distance between the centre of the enemy
-  // and the centre of the avatar is less that their combined radii
-  if (dist(enemyX,enemyY,avatarX,avatarY) < enemySize/2 + avatarSize/2) {
+  // and the centre of the avatar is less that their combined radii, because both image are circles.
+  if (dist(enemyX,enemyY,avatarX,avatarY) < (lion.height*enemyScale)/2 + (cat.height*avatarScale)/2) {
     // Tell the player they lost
     console.log("YOU LOSE!");
     // Reset the enemy's position
@@ -128,9 +157,9 @@ function draw() {
     // Reset the dodge counter
     dodges = 0;
     // Reset the enemy size
-    enemySize = 50;
+    enemyScale = 0.05;
     // Reset the enemy speed
-    enemySpeed = 5;
+    enemySpeed = 3;
   }
 
   // Check if the avatar has gone off the screen (cheating!)
@@ -142,8 +171,8 @@ function draw() {
     avatarX = width/2;
     avatarY = height/2;
     dodges = 0;
-    enemySize = 50;
-    enemySpeed = 5;
+    enemyScale = 50;
+    enemySpeed = 4;
   }
 
   // Check if the enemy has moved all the way across the screen
@@ -156,7 +185,7 @@ function draw() {
     enemyX = 0;
     enemyY = random(0,height);
     // The enemy size should increase
-    enemySize += 5;
+    enemyScale += 0.005;
     // The enemy speed should increase too
     enemySpeed += 0.5;
   }
@@ -164,21 +193,27 @@ function draw() {
   // Display the number of successful dodges in the console
   console.log(dodges);
 
-  // The player is black
-  fill(0);
-  // Draw the player as a circle
-  ellipse(avatarX,avatarY,avatarSize,avatarSize);
+  // Draw the player as a cat
+  image(cat,avatarX,avatarY, cat.width * avatarScale, cat.height *avatarScale);
 
-  // The enemy is red
-  fill(255,0,0);
-  // Draw the enemy as a circle
-  ellipse(enemyX,enemyY,enemySize,enemySize);
+  // Draw the enemy as a lion
+  image(lion,enemyX,enemyY, lion.width * enemyScale, cat.height *enemyScale);
 
+  // We want a black semi-transparent rectangle
+  fill(0,0,0,150)
+  // We want the rectangle at the same place than the text
+  //After observation, the position in Y needs some adjustment
+  let rectangleX = successfulDodgesX;
+  let rectangleY = successfulDodgesY + 3;
+  // Display rectangle below the text so it makes it more visible
+  let rectangleWidth = 340;
+  let rectangleHeight = 30;
+  rect(rectangleX,rectangleY,rectangleWidth,rectangleHeight)
 
   // We want to display the number of successful dodges
   successfulDodges = "SUCCESSFUL dodge(s): " + dodges;
-  // The text is in dark green
-  fill(46,128,67);
+  // The text is in white
+  fill(255);
   // Display the text
   text(successfulDodges,successfulDodgesX,successfulDodgesY);
 

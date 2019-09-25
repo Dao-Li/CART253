@@ -3,10 +3,12 @@
 Game - The Artful Dodger
 Dao-Li Leboeuf (40097085)
 
-Modification of a simple dodging game with keyboard controls
+Modification of a simple dodging game with keyboard controls.
 The dodge game now display the number of successful dodges at the bottom.
-Now the enemy's size and speed both also change if the player win.
-They both are reset if the player loses.
+Furthermore, the enemy's size and speed both also change if the player win.
+They both are reset if the player loses. The enemy is displayed as a lion and
+the player is a little cat in a jungle atmosphere. If the player pressed the
+space bar, the style change between normal style and retro style.
 
 ******************************************************/
 
@@ -15,6 +17,9 @@ let cat;
 let avatarX;
 let avatarY;
 let avatarScale = 0.05;
+// The cat normal and retro version
+let catRetro;
+let catN;
 
 // The speed and velocity of our avatar
 let avatarSpeed = 10;
@@ -26,6 +31,9 @@ let lion;
 let enemyX;
 let enemyY;
 let enemyScale = 0.05;
+// The lion normal and retro version
+let lionN;
+let lionRetro;
 
 // The speed and velocity of our enemy circle
 let enemySpeed = 3;
@@ -47,21 +55,26 @@ let rectangleHeight;
 let rectangleX;
 let rectangleY;
 
-
 // Background (jungle image), its position and its scale
 let jungle;
 let jungleX;
 let jungleY;
-let jungleScale = 0.2;
+let jungleScale = 1;
+// The jungle normal and retro version
+let jungleN;
+let jungleRetro;
+
 
 // preload()
 // preload of images and font
-
 function preload() {
   lemonMilk = loadFont("assets/text/LemonMilk.otf");
-  cat = loadImage("assets/images/cat.png")
-  lion = loadImage("assets/images/lion.png")
-  jungle = loadImage("assets/images/jungle.jpg")
+  catN = loadImage("assets/images/cat.png");
+  lionN = loadImage("assets/images/lion.png");
+  jungleN = loadImage("assets/images/jungle.jpg");
+  catRetro = loadImage("assets/images/catRetro.png");
+  lionRetro = loadImage("assets/images/lionRetro.png");
+  jungleRetro = loadImage("assets/images/jungleRetro.jpg");
 }
 
 // setup()
@@ -70,6 +83,12 @@ function preload() {
 function setup() {
   // Create our playing area
   createCanvas(500,500);
+  // We want to start with a normal look (so the retro is desactivated)
+  retro = false;
+  // Define the images at the beginning of the game
+  jungle = jungleN;
+  cat = catN;
+  lion = lionN;
 
   // Put the avatar in the centre
   avatarX = width/2;
@@ -92,14 +111,15 @@ function setup() {
   enemyY = random(0,height);
 
   // Draw the images from the center
-  imageMode(CENTER)
+  imageMode(CENTER);
   // Draw the text from the center
-  textAlign(CENTER,CENTER)
+  textAlign(CENTER,CENTER);
   // Draw the rectangle from the center
-  rectMode(CENTER)
+  rectMode(CENTER);
   // No stroke so it looks cleaner
   noStroke();
 }
+
 
 // draw()
 //
@@ -199,8 +219,8 @@ function draw() {
   // Draw the enemy as a lion
   image(lion,enemyX,enemyY, lion.width * enemyScale, cat.height *enemyScale);
 
-  // We want a black semi-transparent rectangle
-  fill(0,0,0,150)
+  // We want a black semi-transparent rectangle below the text
+  fill(0,0,0,150);
   // We want the rectangle at the same place than the text
   //After observation, the position in Y needs some adjustment
   let rectangleX = successfulDodgesX;
@@ -218,4 +238,24 @@ function draw() {
   text(successfulDodges,successfulDodgesX,successfulDodgesY);
 
 
+  // We want to change between a normal and retro look
+  // If it's true we want a retro look
+  if (retro) {
+    jungle = jungleRetro;
+    cat = catRetro;
+    lion = lionRetro;
+  }
+  // If it's false, we want to return to a normal style
+  else {
+  jungle = jungleN;
+  cat = catN;
+  lion = lionN;
+  }
+}
+
+// When the space bar is pressed it changes between normal and retro
+function keyPressed () {
+if (keyCode === 32) {
+retro = !retro;
+}
 }

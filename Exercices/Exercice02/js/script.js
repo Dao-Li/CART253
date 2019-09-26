@@ -36,8 +36,8 @@ let lionN;
 let lionRetro;
 
 // The speed and velocity of our enemy circle
-let enemySpeed = 3;
-let enemyVX = 5;
+let enemySpeed = 4;
+let enemyVX = 4;
 
 // How many dodges the player has made
 let dodges = 0;
@@ -47,6 +47,11 @@ let successfulDodges;
 let lemonMilk;
 let successfulDodgesX = 0;
 let successfulDodgesY = 0;
+
+// the text displaying the instructions
+let instructions = "Press the space bar to change between normal and retro style";
+let instructionsX;
+let instructionsY;
 
 // The rectangle (below text) position and size
 let rectangle;
@@ -98,13 +103,17 @@ function setup() {
   jungleX = width/2;
   jungleY = height/2;
 
-  // We want to have LemonMilk font and bold and a big large size
+  // We want to have LemonMilk font and bold and draw from the center
   textFont(lemonMilk);
   textStyle(BOLD);
-  textSize(25);
-  // We want the text at the bottom right corner of the screen
+
+  // We want the text (dodge) at the bottom right corner of the screen
   successfulDodgesX = width/1.7;
   successfulDodgesY = height/1.1;
+
+  // We want the instructions at the top off screen
+  instructionsX = width + width/12
+  instructionsY = height/15
 
   // Put the enemy to the left at a random y coordinate within the canvas
   enemyX = 0;
@@ -112,12 +121,8 @@ function setup() {
 
   // Draw the images from the center
   imageMode(CENTER);
-  // Draw the text from the center
-  textAlign(CENTER,CENTER);
   // Draw the rectangle from the center
   rectMode(CENTER);
-  // No stroke so it looks cleaner
-  noStroke();
 }
 
 
@@ -126,6 +131,10 @@ function setup() {
 // Handle moving the avatar and enemy and checking for dodges and
 // game over situations.
 function draw() {
+
+  // No stroke so it looks cleaner
+  noStroke();
+
   // A jungle as a background
   image(jungle,jungleX,jungleY, jungle.width * jungleScale, jungle.height *jungleScale);
 
@@ -179,7 +188,7 @@ function draw() {
     // Reset the enemy size
     enemyScale = 0.05;
     // Reset the enemy speed
-    enemySpeed = 3;
+    enemySpeed = 4;
   }
 
   // Check if the avatar has gone off the screen (cheating!)
@@ -234,9 +243,30 @@ function draw() {
   successfulDodges = "SUCCESSFUL dodge(s): " + dodges;
   // The text is in white
   fill(255);
+  // Draw the text from the center
+  textAlign(CENTER,CENTER);
+  // We want a larger font size for the text
+  textSize(25);
   // Display the text
   text(successfulDodges,successfulDodgesX,successfulDodgesY);
 
+  // We want to have a stroke for the text instruction
+  stroke(0);
+  strokeWeight(2);
+  // We want the text to be write from left center
+  textAlign(LEFT,CENTER);
+  // We want a smaller font size for the instructions
+  textSize(15);
+  // We want to display the instructions
+  text(instructions,instructionsX,instructionsY);
+  // We want to make the instructions move through the screen
+  instructionsX -= 1.2;
+
+  // Check if the instructions text is qpproxi,qtely off screen
+  if (instructionsX < -1.2*width) {
+    // We want if to return at its initial position then
+    instructionsX = width + width/12;
+  }
 
   // We want to change between a normal and retro look
   // If it's true we want a retro look
@@ -253,6 +283,7 @@ function draw() {
   }
 }
 
+// function keypressed
 // When the space bar is pressed it changes between normal and retro
 function keyPressed () {
 if (keyCode === 32) {

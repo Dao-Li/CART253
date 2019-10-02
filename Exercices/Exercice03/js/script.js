@@ -9,7 +9,7 @@ need to click on the sausage dog you're searching for in amongst all
 the visual noise of other animals.
 
 The image of the target is displayed at the top corner of the screen
-on the top of a blue rectangle. 
+on the top of a blue rectangle.
 
 Animal images from:
 https://creativenerds.co.uk/freebies/80-free-wildlife-icons-the-best-ever-animal-icon-set/
@@ -137,10 +137,23 @@ function setup() {
   rect(rectangleX, rectangleY, rectangleWidth, rectangleHeight);
 
   // Define the image position for the search image
-  targetXSearch = 7/8 * width
-  targetYSearch = 1/12 * height
+  targetXSearch = 7/8 * width;
+  targetYSearch = 1/12 * height;
   // Display the target image at the top corner of the screen
   image(targetImage, targetXSearch, targetYSearch);
+
+  //Prepare the typography for the text in the search icon
+  textFont("Helvetica");
+  textSize(80);
+  textAlign(CENTER, CENTER);
+  noStroke();
+  fill(255);
+
+  // Tell instructions in the search icon
+  // Display 'Chien perdu' over the target search icon
+  text('Chien perdu!',targetXSearch,targetYSearch / 2)
+  // Display 'Please find me' under the target search icon
+  text('Please find me',targetXSearch,targetYSearch * 1.5)
 
 }
 

@@ -2,11 +2,14 @@
 
 /******************************************************************************
 Where's Sausage Dog?
-by Pippin Barr
+by Dao-Li Leboeuf Roy
 
 An algorithmic version of a Where's Wally/Waldo searching game where you
 need to click on the sausage dog you're searching for in amongst all
 the visual noise of other animals.
+
+The image of the target is displayed at the top corner of the screen
+on the top of a blue rectangle. 
 
 Animal images from:
 https://creativenerds.co.uk/freebies/80-free-wildlife-icons-the-best-ever-animal-icon-set/
@@ -36,6 +39,18 @@ let numDecoys = 100;
 // Keep track of whether they've won
 let gameOver = false;
 
+// The rectangle behind tħe image displaying the target image
+// and its caracteristics (position, color, size)
+let rectangleX;
+let rectangleY;
+let rectangleHeight;
+let rectangleWidth;
+let rectangleColor;
+
+// Target image position for the search icons
+let targetXSearch;
+let targetYSearch;
+
 // preload()
 //
 // Loads the target and decoy images before the program starts
@@ -59,15 +74,25 @@ function preload() {
 // Creates the canvas, sets basic modes, draws correct number
 // of decoys in random positions, then the target
 function setup() {
-  createCanvas(windowWidth,windowHeight);
+  createCanvas(windowWidth, windowHeight);
   background("#ffff00");
   imageMode(CENTER);
+
+  // No stroke for a better look
+  noStroke();
+
+  // Define the rectangle caracteristics
+  rectangleX = 3 / 4 * width;
+  rectangleY = 0;
+  rectangleHeight = 1 / 6 * height;
+  rectangleWidth = 1 / 4 * width;
+  rectangleColor = '#4287f5'; // blue color
 
   // Use a for loop to draw as many decoys as we need
   for (let i = 0; i < numDecoys; i++) {
     // Choose a random location on the canvas for this decoy
-    let x = random(0,width);
-    let y = random(0,height);
+    let x = random(0, width);
+    let y = random(0, height);
     // Generate a random number we can use for probability
     let r = random();
     // Use the random number to display one of the ten decoy
@@ -75,43 +100,48 @@ function setup() {
     // We'll talk more about this nice quality of random soon enough.
     // But basically each "if" and "else if" has a 10% chance of being true
     if (r < 0.1) {
-      image(decoyImage1,x,y);
-    }
-    else if (r < 0.2) {
-      image(decoyImage2,x,y);
-    }
-    else if (r < 0.3) {
-      image(decoyImage3,x,y);
-    }
-    else if (r < 0.4) {
-      image(decoyImage4,x,y);
-    }
-    else if (r < 0.5) {
-      image(decoyImage5,x,y);
-    }
-    else if (r < 0.6) {
-      image(decoyImage6,x,y);
-    }
-    else if (r < 0.7) {
-      image(decoyImage7,x,y);
-    }
-    else if (r < 0.8) {
-      image(decoyImage8,x,y);
-    }
-    else if (r < 0.9) {
-      image(decoyImage9,x,y);
-    }
-    else if (r < 1.0) {
-      image(decoyImage10,x,y);
+      image(decoyImage1, x, y);
+    } else if (r < 0.2) {
+      image(decoyImage2, x, y);
+    } else if (r < 0.3) {
+      image(decoyImage3, x, y);
+    } else if (r < 0.4) {
+      image(decoyImage4, x, y);
+    } else if (r < 0.5) {
+      image(decoyImage5, x, y);
+    } else if (r < 0.6) {
+      image(decoyImage6, x, y);
+    } else if (r < 0.7) {
+      image(decoyImage7, x, y);
+    } else if (r < 0.8) {
+      image(decoyImage8, x, y);
+    } else if (r < 0.9) {
+      image(decoyImage9, x, y);
+    } else if (r < 1.0) {
+      image(decoyImage10, x, y);
     }
   }
 
   // Once we've displayed all decoys, we choose a random location for the target
-  targetX = random(0,width);
-  targetY = random(0,height);
+  // We acknowledge the place that the rectangle take
+  targetX = random(0, rectangleX);
+  targetY = random(rectangleHeight, height);
 
   // And draw it (because it's the last thing drawn, it will always be on top)
-  image(targetImage,targetX,targetY);
+  image(targetImage, targetX, targetY);
+
+  // Make the rectangle a nice blue color
+  fill(rectangleColor);
+  // Display the rectangle under the target image search
+  // but on the top of the images
+  rect(rectangleX, rectangleY, rectangleWidth, rectangleHeight);
+
+  // Define the image position for the search image
+  targetXSearch = 7/8 * width
+  targetYSearch = 1/12 * height
+  // Display the target image at the top corner of the screen
+  image(targetImage, targetXSearch, targetYSearch);
+
 }
 
 
@@ -124,19 +154,19 @@ function draw() {
     // Prepare our typography
     textFont("Helvetica");
     textSize(128);
-    textAlign(CENTER,CENTER);
+    textAlign(CENTER, CENTER);
     noStroke();
     fill(random(255));
 
     // Tell them they won!
-    text("YOU WINNED!",width/2,height/2);
+    text("YOU WINNED!", width / 2, height / 2);
 
     // Draw a circle around the sausage dog to show where it is (even though
     // they already know because they found it!)
     noFill();
     stroke(random(255));
     strokeWeight(10);
-    ellipse(targetX,targetY,targetImage.width,targetImage.height);
+    ellipse(targetX, targetY, targetImage.width, targetImage.height);
   }
 }
 
@@ -148,10 +178,10 @@ function mousePressed() {
   // Check if the cursor is in the x range of the target
   // (We're subtracting the image's width/2 because we're using imageMode(CENTER) -
   // the key is we want to determine the left and right edges of the image.)
-  if (mouseX > targetX - targetImage.width/2 && mouseX < targetX + targetImage.width/2) {
+  if (mouseX > targetX - targetImage.width / 2 && mouseX < targetX + targetImage.width / 2) {
     // Check if the cursor is also in the y range of the target
     // i.e. check if it's within the top and bottom of the image
-    if (mouseY > targetY - targetImage.height/2 && mouseY < targetY + targetImage.height/2) {
+    if (mouseY > targetY - targetImage.height / 2 && mouseY < targetY + targetImage.height / 2) {
       gameOver = true;
     }
   }

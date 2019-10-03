@@ -44,7 +44,7 @@ let decoyImage10;
 
 // The number of decoys to show on the screen, randomly
 // chosen from the decoy images
-let numDecoys = 100;
+let numDecoys = 500;
 
 // Keep track of whether they've won
 let gameOver = false;
@@ -117,25 +117,25 @@ function setup() {
     // We'll talk more about this nice quality of random soon enough.
     // But basically each "if" and "else if" has a 10% chance of being true
     if (r < 0.1) {
-      image(decoyImage1, x, y);
+      image(decoyImage1, x, y,decoyImage1.width * 2,decoyImage1.height * 2);
     } else if (r < 0.2) {
-      image(decoyImage2, x, y);
+      image(decoyImage2, x, y,decoyImage2.width * 2,decoyImage2.height * 2);
     } else if (r < 0.3) {
-      image(decoyImage3, x, y);
+      image(decoyImage3, x, y,decoyImage3.width * 2,decoyImage3.height * 2);
     } else if (r < 0.4) {
-      image(decoyImage4, x, y);
+      image(decoyImage4, x, y,decoyImage4.width * 2,decoyImage4.height * 2);
     } else if (r < 0.5) {
-      image(decoyImage5, x, y);
+      image(decoyImage5, x, y,decoyImage5.width * 2,decoyImage5.height * 2);
     } else if (r < 0.6) {
-      image(decoyImage6, x, y);
+      image(decoyImage6, x, y,decoyImage6.width * 2,decoyImage6.height * 2);
     } else if (r < 0.7) {
-      image(decoyImage7, x, y);
+      image(decoyImage7, x, y,decoyImage7.width * 2,decoyImage7.height * 2);
     } else if (r < 0.8) {
-      image(decoyImage8, x, y);
+      image(decoyImage8, x, y,decoyImage8.width * 2,decoyImage8.height * 2);
     } else if (r < 0.9) {
-      image(decoyImage9, x, y);
+      image(decoyImage9, x, y,decoyImage9.width * 2,decoyImage9.height * 2);
     } else if (r < 1.0) {
-      image(decoyImage10, x, y);
+      image(decoyImage10, x, y,decoyImage10.width * 2,decoyImage10.height * 2);
     }
   }
 
@@ -179,7 +179,7 @@ function setup() {
 function draw() {
 
     // And draw the target image on top of the others
-    image(targetImage, targetX, targetY);
+    image(targetImage, targetX, targetY, targetImage.width * 2, targetImage.height * 2);
 
   if (gameOver) {
 
@@ -213,7 +213,7 @@ function draw() {
     noFill();
     stroke(random(255),random(255),random(255),100);
     strokeWeight(10);
-    ellipse(targetX, targetY, targetImage.width * 2, targetImage.height *2);
+    ellipse(targetX, targetY, targetImage.width * 4, targetImage.height * 4);
 
     // Move the image through the screen when you win
     // Define the velocity

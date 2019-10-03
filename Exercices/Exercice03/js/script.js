@@ -9,16 +9,26 @@ need to click on the sausage dog you're searching for in amongst all
 the visual noise of other animals.
 
 The image of the target is displayed at the top corner of the screen
-on the top of a blue rectangle.
+on the top of a blue rectangle with "Chien perdu" and "Please find me" written.
+
+When the player win, the dog move accross the screen randomly in an ellipse
+that change colors and it leaves a trail behind.
 
 Animal images from:
 https://creativenerds.co.uk/freebies/80-free-wildlife-icons-the-best-ever-animal-icon-set/
 ******************************************************************************/
 
 // Position and image of the sausage dog we're searching for
+// and the speed and velocity
 let targetX;
 let targetY;
 let targetImage;
+let targetSpeed = 0.5;
+let targetVX = 0;
+let targetVY = 0;
+// Noises variables
+let tx = 0;
+let ty = 0;
 
 // The ten decoy images
 let decoyImage1;
@@ -50,6 +60,13 @@ let rectangleColor;
 // Target image position for the search icons
 let targetXSearch;
 let targetYSearch;
+
+// Define the caracteristics for the rectangle below the text "You winned"
+let rectangleWinnedX;
+let rectangleWinnedY;
+let rectangleWinnedHeight;
+let rectangleWinnedWidth;
+let rectangleWinnedColor;
 
 // preload()
 //
@@ -127,9 +144,6 @@ function setup() {
   targetX = random(0, rectangleX);
   targetY = random(rectangleHeight, height);
 
-  // And draw it (because it's the last thing drawn, it will always be on top)
-  image(targetImage, targetX, targetY);
-
   // Make the rectangle a nice blue color
   fill(rectangleColor);
   // Display the rectangle under the target image search
@@ -163,13 +177,33 @@ function setup() {
 // Displays the game over screen if the player has won,
 // otherwise nothing (all the gameplay stuff is in mousePressed())
 function draw() {
+
+    // And draw the target image on top of the others
+    image(targetImage, targetX, targetY);
+
   if (gameOver) {
+
+    //Put the frame rate lower
+    frameRate(40)
+
+    // Rectangle center mode (easier to put below the text)
+    rectMode(CENTER)
+    // Define the rectangle caracteristics for under the "You winned"
+    rectangleWinnedX = width / 2;
+    rectangleWinnedY = height / 2;
+    rectangleWinnedHeight = 500
+    rectangleWinnedWidth = 1500
+    rectangleWinnedColor = (0)
+    // Display the rectangle in black
+    fill(rectangleWinnedColor)
+    rect(rectangleWinnedX, rectangleWinnedY, rectangleWinnedWidth, rectangleWinnedHeight);
+
     // Prepare our typography
     textFont("Helvetica");
-    textSize(128);
+    textSize(random(100,200));
     textAlign(CENTER, CENTER);
     noStroke();
-    fill(random(255));
+    fill(random(255),random(255),random(255),200);
 
     // Tell them they won!
     text("YOU WINNED!", width / 2, height / 2);
@@ -177,9 +211,18 @@ function draw() {
     // Draw a circle around the sausage dog to show where it is (even though
     // they already know because they found it!)
     noFill();
-    stroke(random(255));
+    stroke(random(255),random(255),random(255),100);
     strokeWeight(10);
-    ellipse(targetX, targetY, targetImage.width, targetImage.height);
+    ellipse(targetX, targetY, targetImage.width * 2, targetImage.height *2);
+
+    // Move the image through the screen when you win
+    // Define the velocity
+    targetVX += targetSpeed * random (-2,2);
+    targetVY += targetSpeed * random (-2,2);
+    // Make the image move trough the screen
+    targetX += targetVX;
+    targetY += targetVY;
+
   }
 }
 

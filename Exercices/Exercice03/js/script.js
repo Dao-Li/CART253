@@ -12,7 +12,9 @@ The image of the target is displayed at the top corner of the screen
 on the top of a blue rectangle with "Chien perdu" and "Please find me" written.
 
 When the player win, the dog move accross the screen randomly in an ellipse
-that change colors and it leaves a trail behind.
+that change colors and it leaves a trail behind with a wrap effect.
+
+There's 600 decoys animal.
 
 Animal images from:
 https://creativenerds.co.uk/freebies/80-free-wildlife-icons-the-best-ever-animal-icon-set/
@@ -220,6 +222,22 @@ function draw() {
     // Make the image move trough the screen
     targetX += targetVX;
     targetY += targetVY;
+
+    // Wrap when the target and the ellipse goes off the canvas
+    if (targetX < 0) {
+      // Off the left side, so add the width to reset to the right
+      targetX = targetX + width;
+    } else if (targetX > width) {
+      // Off the right side, so subtract the width to reset to the left
+      targetX = targetX - width;
+    }
+    if (targetY < 0) {
+      // Off the top, so add the height to reset to the bottom
+      targetY = targetY + height;
+    } else if (targetY > height) {
+      // Off the bottom, so subtract the height to reset to the top
+      targetY = targetY - height;
+    }
   }
 }
 

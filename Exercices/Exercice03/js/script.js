@@ -44,7 +44,7 @@ let decoyImage10;
 
 // The number of decoys to show on the screen, randomly
 // chosen from the decoy images
-let numDecoys = 500;
+let numDecoys = 600;
 
 // Keep track of whether they've won
 let gameOver = false;
@@ -117,25 +117,25 @@ function setup() {
     // We'll talk more about this nice quality of random soon enough.
     // But basically each "if" and "else if" has a 10% chance of being true
     if (r < 0.1) {
-      image(decoyImage1, x, y,decoyImage1.width * 1.5,decoyImage1.height * 1.5);
+      image(decoyImage1, x, y, decoyImage1.width / 2, decoyImage1.height / 2);
     } else if (r < 0.2) {
-      image(decoyImage2, x, y,decoyImage2.width * 1.5,decoyImage2.height * 1.5);
+      image(decoyImage2, x, y, decoyImage2.width / 2, decoyImage2.height / 2);
     } else if (r < 0.3) {
-      image(decoyImage3, x, y,decoyImage3.width * 1.5,decoyImage3.height * 1.5);
+      image(decoyImage3, x, y, decoyImage3.width / 2, decoyImage3.height / 2);
     } else if (r < 0.4) {
-      image(decoyImage4, x, y,decoyImage4.width * 1.5,decoyImage4.height * 1.5);
+      image(decoyImage4, x, y, decoyImage4.width / 2, decoyImage4.height / 2);
     } else if (r < 0.5) {
-      image(decoyImage5, x, y,decoyImage5.width * 1.5,decoyImage5.height * 1.5);
+      image(decoyImage5, x, y, decoyImage5.width / 2, decoyImage5.height / 2);
     } else if (r < 0.6) {
-      image(decoyImage6, x, y,decoyImage6.width * 1.5,decoyImage6.height * 1.5);
+      image(decoyImage6, x, y, decoyImage6.width / 2, decoyImage6.height / 2);
     } else if (r < 0.7) {
-      image(decoyImage7, x, y,decoyImage7.width * 1.5,decoyImage7.height * 1.5);
+      image(decoyImage7, x, y, decoyImage7.width / 2, decoyImage7.height / 2);
     } else if (r < 0.8) {
-      image(decoyImage8, x, y,decoyImage8.width * 1.5,decoyImage8.height * 1.5);
+      image(decoyImage8, x, y, decoyImage8.width / 2, decoyImage8.height / 2);
     } else if (r < 0.9) {
-      image(decoyImage9, x, y,decoyImage9.width * 1.5,decoyImage9.height * 1.5);
+      image(decoyImage9, x, y, decoyImage9.width / 2, decoyImage9.height / 2);
     } else if (r < 1.0) {
-      image(decoyImage10, x, y,decoyImage10.width * 1.5,decoyImage10.height * 1.5);
+      image(decoyImage10, x, y, decoyImage10.width / 2, decoyImage10.height / 2);
     }
   }
 
@@ -151,26 +151,24 @@ function setup() {
   rect(rectangleX, rectangleY, rectangleWidth, rectangleHeight);
 
   // Define the image position for the search image
-  targetXSearch = 7/8 * width;
-  targetYSearch = 1/12 * height;
+  targetXSearch = 7 / 8 * width;
+  targetYSearch = 1 / 12 * height;
   // Display the target image at the top corner of the screen
   image(targetImage, targetXSearch, targetYSearch);
 
   //Prepare the typography for the text in the search icon
   textFont("Helvetica");
-  textSize(80);
+  textSize(25);
   textAlign(CENTER, CENTER);
   noStroke();
   fill(255);
 
   // Tell instructions in the search icon
   // Display 'Chien perdu' over the target search icon
-  text('Chien perdu!',targetXSearch,targetYSearch / 2)
+  text('Chien perdu!', targetXSearch, targetYSearch / 4);
   // Display 'Please find me' under the target search icon
-  text('Please find me',targetXSearch,targetYSearch * 1.5)
-
+  text('Please find me', targetXSearch, targetYSearch * 1.75);
 }
-
 
 // draw()
 //
@@ -178,8 +176,8 @@ function setup() {
 // otherwise nothing (all the gameplay stuff is in mousePressed())
 function draw() {
 
-    // And draw the target image on top of the others
-    image(targetImage, targetX, targetY, targetImage.width * 1.5, targetImage.height * 1.5);
+  // And draw the target image on top of the others
+  image(targetImage, targetX, targetY, targetImage.width / 2, targetImage.height / 2);
 
   if (gameOver) {
 
@@ -191,19 +189,19 @@ function draw() {
     // Define the rectangle caracteristics for under the "You winned"
     rectangleWinnedX = width / 2;
     rectangleWinnedY = height / 2;
-    rectangleWinnedHeight = 500
-    rectangleWinnedWidth = 1500
-    rectangleWinnedColor = (0)
+    rectangleWinnedHeight = 100;
+    rectangleWinnedWidth = 500;
+    rectangleWinnedColor = (0);
     // Display the rectangle in black
     fill(rectangleWinnedColor)
     rect(rectangleWinnedX, rectangleWinnedY, rectangleWinnedWidth, rectangleWinnedHeight);
 
     // Prepare our typography
     textFont("Helvetica");
-    textSize(random(100,200));
+    textSize(random(50, 75));
     textAlign(CENTER, CENTER);
     noStroke();
-    fill(random(255),random(255),random(255),200);
+    fill(random(255), random(255), random(255), 200);
 
     // Tell them they won!
     text("YOU WINNED!", width / 2, height / 2);
@@ -211,18 +209,17 @@ function draw() {
     // Draw a circle around the sausage dog to show where it is (even though
     // they already know because they found it!)
     noFill();
-    stroke(random(255),random(255),random(255),100);
+    stroke(random(255), random(255), random(255), 100);
     strokeWeight(10);
-    ellipse(targetX, targetY, targetImage.width * 3, targetImage.height * 3);
+    ellipse(targetX, targetY, targetImage.width, targetImage.height);
 
     // Move the image through the screen when you win
     // Define the velocity
-    targetVX += targetSpeed * random (-2,2);
-    targetVY += targetSpeed * random (-2,2);
+    targetVX += targetSpeed * random(-2, 2);
+    targetVY += targetSpeed * random(-2, 2);
     // Make the image move trough the screen
     targetX += targetVX;
     targetY += targetVY;
-
   }
 }
 

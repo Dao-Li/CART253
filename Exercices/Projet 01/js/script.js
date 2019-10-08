@@ -3,15 +3,15 @@
 /******************************************************
 
 Game - Chaser
-Pippin Barr
+Modified by Dao-Li Leboeuf Roy;
 
 A "simple" game of cat and mouse. The player is a circle and can move with keys,
-if they overlap the (randomly moving) prey they "eat it" by sucking out its life
-and adding it to their own. The player "dies" slowly over time so they have to keep
-eating to stay alive.
+if they overlap the (randomly moving according to Noise perlin) prey they "eat it"
+by sucking out its life and adding it to their own. The player "dies" slowly
+over time so they have to keep eating to stay alive.
 
 Includes: Physics-based movement, keyboard controls, health/stamina,
-random movement, screen wrap.
+random movement (Perlin noise), screen wrap.
 
 ******************************************************/
 
@@ -31,13 +31,15 @@ let playerMaxHealth = 255;
 // Player fill color
 let playerFill = 50;
 
-// Prey position, size, velocity
+// Prey position, size, velocity, noise time
 let preyX;
 let preyY;
 let preyRadius = 25;
 let preyVX;
 let preyVY;
-let preyMaxSpeed = 4;
+let preyMaxSpeed = 5;
+let preyNoiseTx;
+let preyNoiseTy;
 // Prey health
 let preyHealth;
 let preyMaxHealth = 100;
@@ -71,6 +73,8 @@ function setupPrey() {
   preyVX = -preyMaxSpeed;
   preyVY = preyMaxSpeed;
   preyHealth = preyMaxHealth;
+  preyNoiseTx = random(0,width);
+  preyNoiseTy = random(0, height);
 }
 
 // setupPlayer()
@@ -216,16 +220,18 @@ function checkEating() {
 // Moves the prey based on random velocity changes
 function movePrey() {
   // Change the prey's velocity at random intervals
-  // random() will be < 0.05 5% of the time, so the prey
-  // will change direction on 5% of frames
-  if (random() < 0.05) {
+  // random() will be < 0.02 2% of the time, so the prey
+  // will change direction on 2% of frames
+  if (random() < 0.02) {
     // Set velocity based on random values to get a new direction
     // and speed of movement
     //
     // Use map() to convert from the 0-1 range of the random() function
     // to the appropriate range of velocities for the prey
-    preyVX = map(random(), 0, 1, -preyMaxSpeed, preyMaxSpeed);
-    preyVY = map(random(), 0, 1, -preyMaxSpeed, preyMaxSpeed);
+    preyVX = map(noise(preyNoiseTx), 0, 1, -preyMaxSpeed, preyMaxSpeed);
+    preyVY = map(noise(preyNoiseTy), 0, 1, -preyMaxSpeed, preyMaxSpeed);
+    preyNoiseTx += 5;
+    preyNoiseTy += 5;
   }
 
   // Update prey position based on velocity

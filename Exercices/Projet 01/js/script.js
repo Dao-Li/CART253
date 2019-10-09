@@ -15,8 +15,12 @@ random movement (Perlin noise), screen wrap.
 
 ******************************************************/
 
-// Track whether the game is over
-let gameOver = false;
+// Track at what point the game is
+// 1 === display the context and instructions
+// 2 === when the game is active
+// 3 === when the player won
+// 4 === when the player lost
+let game = 2; // start the game on the instructions
 
 // playerGargamel (player) position, size, velocity
 let playerGargamelX;
@@ -24,7 +28,7 @@ let playerGargamelY;
 let playerGargamelscale = 0.3;
 let playerGargamelVX = 0;
 let playerGargamelVY = 0;
-let playerGargamelMaxSpeed = 2.5;
+let playerGargamelMaxSpeed = 4;
 // playerGargamel health
 let playerGargamelHealth;
 let playerGargamelMaxHealth = 255;
@@ -66,11 +70,22 @@ let smurfEaten = 0;
 let smurfBackgroundImage;
 let backgroundScale = 0.75;
 
+// Audio variables
+let backgroundMusic;
+let evilLaugh;
+
 // Preload
 //
 //add preload function to load the assets images and sound
 function preload() {
 
+  //sounds
+  // https://www.bensound.com/royalty-free-music/3
+  backgroundMusic = loadSound("assets/sounds/bensound-evolution.mp3");
+  //
+  evilLaugh = loadSound("assets/sounds/laugh.wav");
+
+  // Images
   // Smurf images
   // 1 : https://www.stickpng.com/fr/img/films/dessins-animes/les-schtroumpfs/schtroumpf-maladroit-se-cogne-a-un-rocher
   smurfImage1 = loadImage("assets/images/smurf1.png");
@@ -100,19 +115,23 @@ function preload() {
   // Background image
   // https://www.artstation.com/artwork/k2Og0
   smurfBackgroundImage = loadImage("assets/images/smurfBackground.jpg");
+  //
+  // Instructions
+  instructionImage = loadImage("assets/images/instructions.jpg");
 }
 
 // setup()
 //
 // Sets up the basic elements of the game
 function setup() {
-  createCanvas(500, 500);
+  createCanvas(800, 500);
 
   noStroke();
 
   // We're using simple functions to separate code out
   setupsmurf();
   setupplayerGargamel();
+  setupSound()
 }
 
 // setupsmurf()
@@ -143,6 +162,14 @@ function setupplayerGargamel() {
   imageMode(CENTER)
 }
 
+// setup the background sound, with light volume and in loop
+function setupSound(){
+  backgroundMusic.play()
+  backgroundMusic.setVolume(0.7)
+  backgroundMusic.loop()
+  }
+
+
 // draw()
 //
 // While the game is active, checks input
@@ -153,18 +180,20 @@ function setupplayerGargamel() {
 function draw() {
   setBackground()
 
-  if (!gameOver) {
+  if (game === 2) {
     handleInput();
 
     movePlayerGargamel();
     movesmurf();
 
     updateHealth();
-    checkEating();
+    checkCatching();
 
     drawsmurf();
     drawplayerGargamel();
-  } else {
+  }
+
+  else if (game === 4){
     showGameOver();
   }
 }
@@ -205,11 +234,11 @@ function handleInput() {
   // Check if the player pressed shift. If yes, give the ability to sprint.
   if (keyIsDown(SHIFT)) {
     // Give speed to the player Gargamel, but reduce health
-    playerGargamelMaxSpeed = 6;
+    playerGargamelMaxSpeed = 7;
     playerGargamelHealth -= 3;
   } else {
     // Reset to the initial values
-    playerGargamelMaxSpeed = 2.5;
+    playerGargamelMaxSpeed = 4;
     playerGargamelHealth -= 0.5;
   }
 }
@@ -253,19 +282,19 @@ function updateHealth() {
   // Check if the playerGargamel is dead (0 health)
   if (playerGargamelHealth === 0) {
     // If so, the game is over
-    gameOver = true;
+    game = 4; // 4 represents that the game is over
   }
 }
 
 // checkEating()
 //
 // Check if the playerGargamel overlaps the smurf and updates health of both
-function checkEating() {
+function checkCatching() {
   // Get distance of playerGargamel to smurf
   let d = dist(playerGargamelX, playerGargamelY, smurfX, smurfY);
   // Check if it's an overlap. Addition each image * their scale and divide them by two to
   if (d < (playerGargamelImage.width * playerGargamelscale) / 2 + (smurfImage1.width * smurfscale) / 2) {
-    // Increase the playerGargamel health
+    // Increase the playerGargamel health, because he gains hope
     playerGargamelHealth = playerGargamelHealth + eatHealth;
     // Constrain to the possible range
     playerGargamelHealth = constrain(playerGargamelHealth, 0, playerGargamelMaxHealth);
@@ -273,6 +302,13 @@ function checkEating() {
     smurfHealth = smurfHealth - eatHealth;
     // Constrain to the possible range
     smurfHealth = constrain(smurfHealth, 0, smurfMaxHealth);
+    // play an evil laugh sound, because the player is evil and happy
+    // There's a bug with this :(
+    // I tried to play with the volume and pan, but it ended up freezing at that part if doing so...
+    evilLaugh.play();
+    // Make the player Gargamel a little bit bigger,
+    // because his hope in his soul actually makes him bigger.
+    playerGargamelscale += 0.002;
 
     // Check if the smurf died (health 0)
     if (smurfHealth === 0) {
@@ -335,7 +371,8 @@ function drawsmurf() {
   // Each smurf has 10% chance to be displayed on the screen
   if (randomSmurf < 0.1) {
     image(smurfImage1, smurfX, smurfY, smurfImage1.width * smurfscale, smurfImage1.height * smurfscale);
-  } else if (randomSmurf < 0.2) {
+  }
+  else if (randomSmurf < 0.2) {
     image(smurfImage2, smurfX, smurfY, smurfImage1.width * smurfscale, smurfImage1.height * smurfscale);
   }
   else if (randomSmurf < 0.3) {
@@ -374,20 +411,29 @@ function drawplayerGargamel() {
     playerGargamelImage.width * playerGargamelscale, playerGargamelImage.height * playerGargamelscale);
 }
 
+// showWinning
+//
+// Display an image saying that you won!
+function showWinning() {
+  //
+}
+
 // showGameOver()
 //
 // Display text about the game being over!
 function showGameOver() {
   //set a background
-  background(255)
+  background(0)
   // Set up the font
-  textSize(32);
+  textSize(40);
   textAlign(CENTER, CENTER);
-  fill(0);
+  fill(255);
+  textFont('MONTSERRAT')
   // Set up the text to display
   let gameOverText = "GAME OVER\n"; // \n means "new line"
   gameOverText = gameOverText + "You catched " + smurfEaten + " smurf(s)\n";
-  gameOverText = gameOverText + "before you died of hopelessness."
+  gameOverText = gameOverText + "before you died of hopelessness.\n"
+  gameOverText = gameOverText + "Unfortunately, you \n"
   // Display it in the centre of the screen
   text(gameOverText, width / 2, height / 2);
 }

@@ -24,7 +24,7 @@ let playerGargamelY;
 let playerGargamelscale = 0.3;
 let playerGargamelVX = 0;
 let playerGargamelVY = 0;
-let playerGargamelMaxSpeed = 3;
+let playerGargamelMaxSpeed = 2.5;
 // playerGargamel health
 let playerGargamelHealth;
 let playerGargamelMaxHealth = 255;
@@ -37,7 +37,7 @@ let smurfY;
 let smurfscale = 0.2;
 let smurfVX;
 let smurfVY;
-let smurfMaxSpeed = 5;
+let smurfMaxSpeed = 4;
 let smurfNoiseTx;
 let smurfNoiseTy;
 // smurf health
@@ -200,6 +200,17 @@ function handleInput() {
     playerGargamelVY = playerGargamelMaxSpeed;
   } else {
     playerGargamelVY = 0;
+  }
+
+  // Check if the player pressed shift. If yes, give the ability to sprint.
+  if (keyIsDown(SHIFT)) {
+    // Give speed to the player Gargamel, but reduce health
+    playerGargamelMaxSpeed = 6;
+    playerGargamelHealth -= 3;
+  } else {
+    // Reset to the initial values
+    playerGargamelMaxSpeed = 2.5;
+    playerGargamelHealth -= 0.5;
   }
 }
 

@@ -43,22 +43,64 @@ let smurfNoiseTy;
 // smurf health
 let smurfHealth;
 let smurfMaxHealth = 100;
-// smurf image to display
-let smurfImage;
+// smurf images to display
+let smurfImage1;
+let smurfImage2;
+let smurfImage3;
+let smurfImage4;
+let smurfImage5;
+let smurfImage6;
+let smurfImage7;
+let smurfImage8;
+let smurfImage9;
+let smurfImage10;
+// Display a random smurf each time
+let randomSmurf;
+
 // Amount of health obtained per frame of "eating" (overlapping) the smurf
 let eatHealth = 10;
 // Number of smurf eaten during the game (the "score")
 let smurfEaten = 0;
 
-//add preload function to load the assets images
+// Define the background and its scale
+let smurfBackgroundImage;
+let backgroundScale = 0.75;
+
+// Preload
+//
+//add preload function to load the assets images and sound
 function preload() {
-  // Preload
-  // https://www.stickpng.com/fr/img/films/dessins-animes/les-schtroumpfs/schtroumpf-maladroit-se-cogne-a-un-rocher
-  smurfImage = loadImage("assets/images/smurf.png");
+
+  // Smurf images
+  // 1 : https://www.stickpng.com/fr/img/films/dessins-animes/les-schtroumpfs/schtroumpf-maladroit-se-cogne-a-un-rocher
+  smurfImage1 = loadImage("assets/images/smurf1.png");
+  // 2 : https://www.pinclipart.com/pindetail/iiJmJwi_free-png-papa-smurf-png-smurfs-the-lost/
+  smurfImage2 = loadImage("assets/images/smurf2.png");
+  // 3 : http://www.pngall.com/smurfs-png/download/33570
+  smurfImage3 = loadImage("assets/images/smurf3.png");
+  // 4 : http://www.pngall.com/smurfs-png/download/33591
+  smurfImage4 = loadImage("assets/images/smurf4.png");
+  // 5 : http://www.pngall.com/smurfs-png/download/33571
+  smurfImage5 = loadImage("assets/images/smurf5.png");
+  // 6 : http://www.pngall.com/smurfs-png/download/33577
+  smurfImage6 = loadImage("assets/images/smurf6.png");
+  // 7 : http://www.pngall.com/smurfs-png/download/33579
+  smurfImage7 = loadImage("assets/images/smurf7.png");
+  // 8 : http://www.pngall.com/smurfs-png/download/33581
+  smurfImage8 = loadImage("assets/images/smurf8.png");
+  // 9 : http://www.pngall.com/smurfs-png/download/33587
+  smurfImage9 = loadImage("assets/images/smurf9.png");
+  // 10 : http://www.pngall.com/smurfs-png/download/33573
+  smurfImage10 = loadImage("assets/images/smurf10.png");
+  //
+  // Gargamel image
   // https://pngimage.net/gargamel-png-5/
   playerGargamelImage = loadImage("assets/images/gargamel.png");
+  //
+  // Background image
+  // https://www.artstation.com/artwork/k2Og0
+  smurfBackgroundImage = loadImage("assets/images/smurfBackground.jpg");
 }
-
 
 // setup()
 //
@@ -82,10 +124,12 @@ function setupsmurf() {
   smurfVX = -smurfMaxSpeed;
   smurfVY = smurfMaxSpeed;
   smurfHealth = smurfMaxHealth;
-  smurfNoiseTx = random(0,width);
+  smurfNoiseTx = random(0, width);
   smurfNoiseTy = random(0, height);
   // Draw image from center
   imageMode(CENTER)
+  // Choice a random smurf
+  randomSmurf = random(0,1);
 }
 
 // setupplayerGargamel()
@@ -107,12 +151,12 @@ function setupplayerGargamel() {
 // displays the two agents.
 // When the game is over, shows the game over screen.
 function draw() {
-  background(100, 100, 200);
+  setBackground()
 
   if (!gameOver) {
     handleInput();
 
-    moveplayerGargamel();
+    movePlayerGargamel();
     movesmurf();
 
     updateHealth();
@@ -120,10 +164,20 @@ function draw() {
 
     drawsmurf();
     drawplayerGargamel();
-  }
-  else {
+  } else {
     showGameOver();
   }
+}
+
+// setBackground
+//
+// Set the background with a smurf background landscape
+function setBackground() {
+  // Put light tin in red to show hatred in the player (Gargamel) mind and with small
+  // transparency so when the gargamel or the smurf go fast there's a small trail
+  tint(255, random(255), 0, 127);
+  // Display the background
+  image(smurfBackgroundImage, width / 2, height / 2, smurfBackgroundImage.width * backgroundScale, smurfBackgroundImage.height * backgroundScale);
 }
 
 // handleInput()
@@ -133,31 +187,27 @@ function handleInput() {
   // Check for horizontal movement
   if (keyIsDown(LEFT_ARROW)) {
     playerGargamelVX = -playerGargamelMaxSpeed;
-  }
-  else if (keyIsDown(RIGHT_ARROW)) {
+  } else if (keyIsDown(RIGHT_ARROW)) {
     playerGargamelVX = playerGargamelMaxSpeed;
-  }
-  else {
+  } else {
     playerGargamelVX = 0;
   }
 
   // Check for vertical movement
   if (keyIsDown(UP_ARROW)) {
     playerGargamelVY = -playerGargamelMaxSpeed;
-  }
-  else if (keyIsDown(DOWN_ARROW)) {
+  } else if (keyIsDown(DOWN_ARROW)) {
     playerGargamelVY = playerGargamelMaxSpeed;
-  }
-  else {
+  } else {
     playerGargamelVY = 0;
   }
 }
 
-// moveplayerGargamel()
+// movePlayerGargamel()
 //
 // Updates playerGargamel position based on velocity,
 // wraps around the edges.
-function moveplayerGargamel() {
+function movePlayerGargamel() {
   // Update position
   playerGargamelX = playerGargamelX + playerGargamelVX;
   playerGargamelY = playerGargamelY + playerGargamelVY;
@@ -166,8 +216,7 @@ function moveplayerGargamel() {
   if (playerGargamelX < 0) {
     // Off the left side, so add the width to reset to the right
     playerGargamelX = playerGargamelX + width;
-  }
-  else if (playerGargamelX > width) {
+  } else if (playerGargamelX > width) {
     // Off the right side, so subtract the width to reset to the left
     playerGargamelX = playerGargamelX - width;
   }
@@ -175,8 +224,7 @@ function moveplayerGargamel() {
   if (playerGargamelY < 0) {
     // Off the top, so add the height to reset to the bottom
     playerGargamelY = playerGargamelY + height;
-  }
-  else if (playerGargamelY > height) {
+  } else if (playerGargamelY > height) {
     // Off the bottom, so subtract the height to reset to the top
     playerGargamelY = playerGargamelY - height;
   }
@@ -205,7 +253,7 @@ function checkEating() {
   // Get distance of playerGargamel to smurf
   let d = dist(playerGargamelX, playerGargamelY, smurfX, smurfY);
   // Check if it's an overlap. Addition each image * their scale and divide them by two to
-  if (d < (playerGargamelImage.width * playerGargamelscale)/2 + (smurfImage.width * smurfscale)/2) {
+  if (d < (playerGargamelImage.width * playerGargamelscale) / 2 + (smurfImage1.width * smurfscale) / 2) {
     // Increase the playerGargamel health
     playerGargamelHealth = playerGargamelHealth + eatHealth;
     // Constrain to the possible range
@@ -217,6 +265,8 @@ function checkEating() {
 
     // Check if the smurf died (health 0)
     if (smurfHealth === 0) {
+      // Choice a random smurf
+      randomSmurf = random(0,1)
       // Move the "new" smurf to a random position
       smurfX = random(0, width);
       smurfY = random(0, height);
@@ -254,39 +304,71 @@ function movesmurf() {
   // Screen wrapping
   if (smurfX < 0) {
     smurfX = smurfX + width;
-  }
-  else if (smurfX > width) {
+  } else if (smurfX > width) {
     smurfX = smurfX - width;
   }
 
   if (smurfY < 0) {
     smurfY = smurfY + height;
-  }
-  else if (smurfY > height) {
+  } else if (smurfY > height) {
     smurfY = smurfY - height;
   }
 }
 
 // drawsmurf()
 //
-// Draw the smurf as an ellipse with alpha based on health
+// Draw the prey smurf with a random smurf image with full opacity
 function drawsmurf() {
-  image(smurfImage,smurfX, smurfY, smurfImage.width * smurfscale, smurfImage.height * smurfscale);
+  // Make the smurf full opacity
+  tint(255, 255)
+  // Each smurf has 10% chance to be displayed on the screen
+  if (randomSmurf < 0.1) {
+    image(smurfImage1, smurfX, smurfY, smurfImage1.width * smurfscale, smurfImage1.height * smurfscale);
+  } else if (randomSmurf < 0.2) {
+    image(smurfImage2, smurfX, smurfY, smurfImage1.width * smurfscale, smurfImage1.height * smurfscale);
+  }
+  else if (randomSmurf < 0.3) {
+    image(smurfImage3, smurfX, smurfY, smurfImage1.width * smurfscale, smurfImage1.height * smurfscale);
+  }
+  else if (randomSmurf < 0.4) {
+    image(smurfImage4, smurfX, smurfY, smurfImage1.width * smurfscale, smurfImage1.height * smurfscale);
+  }
+  else if (randomSmurf < 0.5) {
+    image(smurfImage5, smurfX, smurfY, smurfImage1.width * smurfscale, smurfImage1.height * smurfscale);
+  }
+  else if (randomSmurf < 0.6) {
+    image(smurfImage6, smurfX, smurfY, smurfImage1.width * smurfscale, smurfImage1.height * smurfscale);
+  }
+  else if (randomSmurf < 0.7) {
+    image(smurfImage7, smurfX, smurfY, smurfImage1.width * smurfscale, smurfImage1.height * smurfscale);
+  }
+  else if (randomSmurf < 0.8) {
+    image(smurfImage8, smurfX, smurfY, smurfImage1.width * smurfscale, smurfImage1.height * smurfscale);
+  }
+  else if (randomSmurf < 0.9) {
+    image(smurfImage9, smurfX, smurfY, smurfImage1.width * smurfscale, smurfImage1.height * smurfscale);
+  }
+  else if (randomSmurf < 1.1) {
+    image(smurfImage10, smurfX, smurfY, smurfImage1.width * smurfscale, smurfImage1.height * smurfscale);
+  }
 }
+
 
 // drawplayerGargamel()
 //
-// Draw the playerGargamel as an ellipse with alpha value based on health
+// Draw the playerGargamel with a picture of Gargamel with alpha value based on health
 function drawplayerGargamel() {
   tint(255, playerGargamelHealth);
-  image(playerGargamelImage,playerGargamelX, playerGargamelY,
-        playerGargamelImage.width * playerGargamelscale, playerGargamelImage.height * playerGargamelscale);
+  image(playerGargamelImage, playerGargamelX, playerGargamelY,
+    playerGargamelImage.width * playerGargamelscale, playerGargamelImage.height * playerGargamelscale);
 }
 
 // showGameOver()
 //
 // Display text about the game being over!
 function showGameOver() {
+  //set a background
+  background(255)
   // Set up the font
   textSize(32);
   textAlign(CENTER, CENTER);

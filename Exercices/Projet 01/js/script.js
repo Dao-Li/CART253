@@ -367,9 +367,10 @@ function checkCatching() {
     // Constrain to the possible range
     smurfHope = constrain(smurfHope, 0, smurfMaxHope);
     // play an evil laugh sound, because the player is evil and happy
-    // There's a bug with this :(
-    // I tried to play with the volume and pan, but it ended up freezing at that part if doing so...
+    // only play it in mode untilDone so it won't play again and again
     evilLaugh.play();
+    evilLaugh.playMode('untilDone');
+
     // Make the player Gargamel a little bit bigger,
     // because his hope in his soul actually makes him bigger.
     playerGargamelscale += 0.002;

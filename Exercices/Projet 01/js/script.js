@@ -189,8 +189,8 @@ function draw() {
   if (game === 1) {
     showInstructions();
   } else if (game === 2) {
-    displayNumberSmurfCatched()
     setBackground()
+    displayNumberSmurfCatched()
     handleInput();
 
     movePlayerGargamel();
@@ -220,8 +220,6 @@ function showInstructions() {
   }
 }
 
-// displayNumberSmurfCatched()
-
 // setBackground()
 //
 // Set the background with a smurf background landscape
@@ -232,6 +230,15 @@ function setBackground() {
   // Display the background
   image(smurfBackgroundImage, width / 2, height / 2, smurfBackgroundImage.width * backgroundScale, smurfBackgroundImage.height * backgroundScale);
 }
+
+// displayNumberSmurfCatched()
+function displayNumberSmurfCatched() {
+  // display the number of smurf catched
+  fill(255);
+  textSize(100);
+  textAlign(CENTER,CENTER)
+  text("SMURF(S) : " + smurfCatched, width/2, height/2);
+  }
 
 // handleInput()
 //

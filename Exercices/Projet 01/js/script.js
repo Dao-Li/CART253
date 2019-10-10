@@ -8,7 +8,7 @@ Modified by Dao-Li Leboeuf Roy;
 A "simple" game of cat and mouse but with gargamel and smurfs instead.
 The player (Gargamel) can move with keys to overlap the
 (randomly moving according to Noise perlin) smurf to catch it.
-Each time it catch one, it fuels his hope and gives him health. Gargamel "dies"
+Each time it catch one, it fuels his hope and gives him Hope. Gargamel "dies"
 slowly over time, because of losing hope, so he has to keep catching smurf to stay alive.
 
 - You are gargamel.
@@ -21,7 +21,7 @@ The smurf displayed is random between a selection of 10.
 There's a suspense music as a background and a awkward evil laughing
 that sounds like a growl when the player catch a smurf.
 
-Includes: Physics-based movement, keyboard controls, health/stamina,
+Includes: Physics-based movement, keyboard controls, Hope/stamina,
 random movement (Perlin noise), screen wrap.
 
 ******************************************************/
@@ -40,9 +40,9 @@ let playerGargamelscale = 0.3;
 let playerGargamelVX = 0;
 let playerGargamelVY = 0;
 let playerGargamelMaxSpeed = 4;
-// playerGargamel health
-let playerGargamelHealth;
-let playerGargamelMaxHealth = 255;
+// playerGargamel Hope
+let playerGargamelHope;
+let playerGargamelMaxHope = 255;
 // playerGargamel image to display
 let playerGargamelLeftImage;
 let playerGargamelRightImage;
@@ -57,9 +57,9 @@ let smurfVY;
 let smurfMaxSpeed = 4;
 let smurfNoiseTx;
 let smurfNoiseTy;
-// smurf health
-let smurfHealth;
-let smurfMaxHealth = 100;
+// smurf Hope
+let smurfHope;
+let smurfMaxHope = 100;
 // smurf images to display
 let smurfImage1;
 let smurfImage2;
@@ -74,8 +74,8 @@ let smurfImage10;
 // Display a random smurf each time
 let randomSmurf;
 
-// Amount of health obtained per frame of "eating" (overlapping) the smurf
-let eatHealth = 10;
+// Amount of Hope obtained per frame of "eating" (overlapping) the smurf
+let eatHope = 10;
 // Number of smurf eaten during the game (the "score")
 let smurfCaught = 0;
 
@@ -152,44 +152,44 @@ function setup() {
   // We're using simple functions to separate code out
   setupsmurf();
   setupplayerGargamel();
-  setupSound()
+  setupSound();
 }
 
 // setupsmurf()
 //
-// Initialises smurf's position, velocity, and health
+// Initialises smurf's position, velocity, and Hope
 function setupsmurf() {
   smurfX = width / 5;
   smurfY = height / 2;
   smurfVX = -smurfMaxSpeed;
   smurfVY = smurfMaxSpeed;
-  smurfHealth = smurfMaxHealth;
+  smurfHope = smurfMaxHope;
   smurfNoiseTx = random(0, width);
   smurfNoiseTy = random(0, height);
   // Draw image from center
-  imageMode(CENTER)
+  imageMode(CENTER);
   // Choice a random smurf
   randomSmurf = random(0, 1);
 }
 
 // setupplayerGargamel()
 //
-// Initialises playerGargamel position and health
+// Initialises playerGargamel position and Hope
 function setupplayerGargamel() {
   playerGargamelX = 4 * width / 5;
   playerGargamelY = height / 2;
-  playerGargamelHealth = playerGargamelMaxHealth;
+  playerGargamelHope = playerGargamelMaxHope;
   // Draw by default to the left
-  playerGargamelImage = playerGargamelLeftImage
+  playerGargamelImage = playerGargamelLeftImage;
   // Draw image from center
-  imageMode(CENTER)
+  imageMode(CENTER);
 }
 
 // setup the background sound, with light volume and in loop
 function setupSound() {
-  backgroundMusic.play()
-  backgroundMusic.setVolume(0.7)
-  backgroundMusic.loop()
+  backgroundMusic.play();
+  backgroundMusic.setVolume(0.7);
+  backgroundMusic.loop();
 }
 
 
@@ -198,7 +198,7 @@ function setupSound() {
 // Before the game start display the instruction
 // While the game is active, checks input
 // updates positions of smurf and playerGargamel,
-// checks health (dying), checks catching (overlaps)
+// checks Hope (dying), checks catching (overlaps)
 // displays the two agents.
 // When the game is over, shows the game over screen if losing and
 // game winning image if winning.
@@ -208,13 +208,13 @@ function draw() {
     showInstructions();
   } else if (game === 2) {
     setBackground()
-    displayNumberSmurfCaught()
+    displayNumberAndText()
     handleInput();
 
     movePlayerGargamel();
     movesmurf();
 
-    updateHealth();
+    updateHope();
     checkCatching();
 
     drawsmurf();
@@ -231,7 +231,7 @@ function draw() {
 // Introduction about the game and some instructions
 function showInstructions() {
   // display the image show the instruction
-  image(instructionImage, width / 2, height / 2, instructionImage.width, instructionImage.height)
+  image(instructionImage, width / 2, height / 2, instructionImage.width, instructionImage.height);
   // check if the player press the enter key
   if (keyIsDown(ENTER)) {
     game = 2;
@@ -249,13 +249,20 @@ function setBackground() {
   image(smurfBackgroundImage, width / 2, height / 2, smurfBackgroundImage.width * backgroundScale, smurfBackgroundImage.height * backgroundScale);
 }
 
-// displayNumberSmurfCaught()
-function displayNumberSmurfCaught() {
-  // display the number of smurf caught
+// displayNumberAndText()
+//
+// A function that display the number of hope left and the number of smurf caught
+function displayNumberAndText() {
+  // Define the properties of the text
   fill(255);
-  textSize(100);
-  textAlign(CENTER, CENTER)
-  text("SMURF(S) : " + smurfCaught, width / 2, height / 2);
+  textSize(50);
+  textAlign(CENTER, CENTER);
+  // display the number of smurf caught
+  let numberAndText =  smurfCaught + " SMURF(S) CAUGHT\n"
+  // display the number of hope left
+  numberAndText = numberAndText + "HOPE : " + playerGargamelHope
+  // display the text
+  text(numberAndText, width / 2, height / 2);
 }
 
 // handleInput()
@@ -274,10 +281,10 @@ function handleInput() {
   // Check for if the character goes left or right
   if (keyIsDown(LEFT_ARROW)) {
     // draw the player to the left
-    playerGargamelImage = playerGargamelLeftImage
+    playerGargamelImage = playerGargamelLeftImage;
   } else if (keyIsDown(RIGHT_ARROW)) {
     // draw the player to the left
-    playerGargamelImage = playerGargamelRightImage
+    playerGargamelImage = playerGargamelRightImage;
   }
 
   // Check for vertical movement
@@ -291,13 +298,13 @@ function handleInput() {
 
   // Check if the player pressed shift. If yes, give the ability to sprint.
   if (keyIsDown(SHIFT)) {
-    // Give speed to the player Gargamel, but reduce health
+    // Give speed to the player Gargamel, but reduce Hope
     playerGargamelMaxSpeed = 7;
-    playerGargamelHealth -= 3;
+    playerGargamelHope -= 3;
   } else {
     // Reset to the initial values
     playerGargamelMaxSpeed = 4;
-    playerGargamelHealth -= 0.5;
+    playerGargamelHope -= 0.5;
   }
 }
 
@@ -328,17 +335,17 @@ function movePlayerGargamel() {
   }
 }
 
-// updateHealth()
+// updateHope()
 //
-// Reduce the playerGargamel's health (happens every frame)
+// Reduce the playerGargamel's Hope (happens every frame)
 // Check if the playerGargamel is dead
-function updateHealth() {
-  // Reduce playerGargamel health
-  playerGargamelHealth = playerGargamelHealth - 0.5;
+function updateHope() {
+  // Reduce playerGargamel Hope
+  playerGargamelHope = playerGargamelHope - 0.5;
   // Constrain the result to a sensible range
-  playerGargamelHealth = constrain(playerGargamelHealth, 0, playerGargamelMaxHealth);
-  // Check if the playerGargamel is dead (0 health)
-  if (playerGargamelHealth === 0) {
+  playerGargamelHope = constrain(playerGargamelHope, 0, playerGargamelMaxHope);
+  // Check if the playerGargamel is dead (0 Hope)
+  if (playerGargamelHope === 0) {
     // If so, the game is over
     game = 4; // 4 represents that the game is over
   }
@@ -346,20 +353,20 @@ function updateHealth() {
 
 // checkEating()
 //
-// Check if the playerGargamel overlaps the smurf and updates health of both
+// Check if the playerGargamel overlaps the smurf and updates Hope of both
 function checkCatching() {
   // Get distance of playerGargamel to smurf
   let d = dist(playerGargamelX, playerGargamelY, smurfX, smurfY);
   // Check if it's an overlap. Addition each image * their scale and divide them by two to
   if (d < (playerGargamelLeftImage.width * playerGargamelscale) / 2 + (smurfImage1.width * smurfscale) / 2) {
-    // Increase the playerGargamel health, because he gains hope
-    playerGargamelHealth = playerGargamelHealth + eatHealth;
+    // Increase the playerGargamel Hope, because he gains hope
+    playerGargamelHope = playerGargamelHope + eatHope;
     // Constrain to the possible range
-    playerGargamelHealth = constrain(playerGargamelHealth, 0, playerGargamelMaxHealth);
-    // Reduce the smurf health
-    smurfHealth = smurfHealth - eatHealth;
+    playerGargamelHope = constrain(playerGargamelHope, 0, playerGargamelMaxHope);
+    // Reduce the smurf Hope
+    smurfHope = smurfHope - eatHope;
     // Constrain to the possible range
-    smurfHealth = constrain(smurfHealth, 0, smurfMaxHealth);
+    smurfHope = constrain(smurfHope, 0, smurfMaxHope);
     // play an evil laugh sound, because the player is evil and happy
     // There's a bug with this :(
     // I tried to play with the volume and pan, but it ended up freezing at that part if doing so...
@@ -368,21 +375,21 @@ function checkCatching() {
     // because his hope in his soul actually makes him bigger.
     playerGargamelscale += 0.002;
 
-    // Check if the smurf died (health 0)
-    if (smurfHealth === 0) {
+    // Check if the smurf died (Hope 0)
+    if (smurfHope === 0) {
       // Choice a random smurf
-      randomSmurf = random(0, 1)
+      randomSmurf = random(0, 1);
       // Move the "new" smurf to a random position
       smurfX = random(0, width);
       smurfY = random(0, height);
-      // Give it full health
-      smurfHealth = smurfMaxHealth;
+      // Give it full Hope
+      smurfHope = smurfMaxHope;
       // Track how many smurf were eaten
       smurfCaught = smurfCaught + 1;
 
       // Check if gargamel catched 20 smurf. If so the player won.
       if (smurfCaught > 19) {
-        game = 3
+        game = 3;
       }
     }
   }
@@ -430,7 +437,7 @@ function movesmurf() {
 // Draw the prey smurf with a random smurf image with full opacity
 function drawsmurf() {
   // Make the smurf full opacity
-  tint(255, 255)
+  tint(255, 255);
   // Each smurf has 10% chance to be displayed on the screen
   if (randomSmurf < 0.1) {
     image(smurfImage1, smurfX, smurfY, smurfImage1.width * smurfscale, smurfImage1.height * smurfscale);
@@ -457,10 +464,10 @@ function drawsmurf() {
 
 // drawplayerGargamel()
 //
-// Draw the playerGargamel with a picture of Gargamel display the image with alpha value based on health
+// Draw the playerGargamel with a picture of Gargamel display the image with alpha value based on Hope
 function drawplayerGargamel() {
-  tint(255, playerGargamelHealth);
-   image(playerGargamelImage, playerGargamelX, playerGargamelY,
+  tint(255, playerGargamelHope);
+  image(playerGargamelImage, playerGargamelX, playerGargamelY,
     playerGargamelLeftImage.width * playerGargamelscale, playerGargamelLeftImage.height * playerGargamelscale);
 }
 
@@ -484,17 +491,17 @@ function showWinning() {
 // Display text about the game being over!
 function showGameOver() {
   //set a background
-  background(0)
+  background(0);
   // Set up the font
   textSize(40);
   textAlign(CENTER, CENTER);
   fill(255);
-  textFont('MONTSERRAT')
+  textFont('MONTSERRAT');
   // Set up the text to display
   let gameOverText = "GAME OVER\n\n"; // \n means "new line"
   gameOverText = gameOverText + "You caught " + smurfCaught + " smurf(s)\n";
-  gameOverText = gameOverText + "before you died of hopelessness.\n"
-  gameOverText = gameOverText + "PRESS ENTER TO TRY AGAIN"
+  gameOverText = gameOverText + "before you died of hopelessness.\n";
+  gameOverText = gameOverText + "PRESS ENTER TO TRY AGAIN";
   // Display it in the centre of the screen
   text(gameOverText, width / 2, height / 2);
   // check if the enter is pressed
@@ -509,7 +516,7 @@ function showGameOver() {
 // function restartGame
 function restartGame() {
   // player
-  playerGargamelMaxHealth = 255;
+  playerGargamelMaxHope = 255;
   playerGargamelscale = 0.3;
   playerGargamelVX = 0;
   playerGargamelVY = 0;
@@ -519,6 +526,6 @@ function restartGame() {
   smurfCaught = 0;
   smurfscale = 0.2;
   smurfMaxSpeed = 4;
-  smurfMaxHealth = 100;
+  smurfMaxHope = 100;
   setupsmurf();
 }

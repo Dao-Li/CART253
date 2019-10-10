@@ -192,7 +192,6 @@ function setupSound() {
   backgroundMusic.loop();
 }
 
-
 // draw()
 //
 // Before the game start display the instruction
@@ -258,7 +257,7 @@ function displayNumberAndText() {
   textSize(50);
   textAlign(CENTER, CENTER);
   // display the number of smurf caught
-  let numberAndText =  smurfCaught + " SMURF(S) CAUGHT\n"
+  let numberAndText = smurfCaught + " SMURF(S) CAUGHT\n"
   // display the number of hope left
   numberAndText = numberAndText + "HOPE : " + playerGargamelHope
   // display the text

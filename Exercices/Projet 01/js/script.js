@@ -5,10 +5,21 @@
 Game - Chaser
 Modified by Dao-Li Leboeuf Roy;
 
-A "simple" game of cat and mouse. The player (Gargamel) can move with keys
-to overlap the (randomly moving according to Noise perlin) smurf to catch it.
+A "simple" game of cat and mouse but with gargamel and smurfs instead.
+The player (Gargamel) can move with keys to overlap the
+(randomly moving according to Noise perlin) smurf to catch it.
 Each time it catch one, it fuels his hope and gives him health. Gargamel "dies"
 slowly over time, because of losing hope, so he has to keep catching smurf to stay alive.
+
+- You are gargamel.
+Your goal is to catch smurfs to turn them into gold to have enough money to buy a wig.
+It has been a long time since you wanted one and didn't have the money to do so.
+It takes 20 smurfs to win. The number of smurf caught is displayed on the screen. -
+
+The smurf displayed is random between a selection of 10.
+
+There's a suspense music as a background and a awkward evil laughing
+that sounds like a growl when the player catch a smurf.
 
 Includes: Physics-based movement, keyboard controls, health/stamina,
 random movement (Perlin noise), screen wrap.
@@ -64,7 +75,7 @@ let randomSmurf;
 // Amount of health obtained per frame of "eating" (overlapping) the smurf
 let eatHealth = 10;
 // Number of smurf eaten during the game (the "score")
-let smurfCatched = 0;
+let smurfCaught = 0;
 
 // Define the background and its scale
 let smurfBackgroundImage;
@@ -179,18 +190,20 @@ function setupSound() {
 
 // draw()
 //
+// Before the game start display the instruction
 // While the game is active, checks input
 // updates positions of smurf and playerGargamel,
-// checks health (dying), checks eating (overlaps)
+// checks health (dying), checks catching (overlaps)
 // displays the two agents.
-// When the game is over, shows the game over screen.
+// When the game is over, shows the game over screen if losing and
+// game winning image if winning.
 function draw() {
 
   if (game === 1) {
     showInstructions();
   } else if (game === 2) {
     setBackground()
-    displayNumberSmurfCatched()
+    displayNumberSmurfCaught()
     handleInput();
 
     movePlayerGargamel();
@@ -214,7 +227,7 @@ function draw() {
 function showInstructions() {
   // display the image show the instruction
   image(instructionImage, width / 2, height / 2, instructionImage.width, instructionImage.height)
-  // check if the enter bar is press
+  // check if the player press the enter key
   if (keyIsDown(ENTER)) {
     game = 2;
   }
@@ -231,14 +244,14 @@ function setBackground() {
   image(smurfBackgroundImage, width / 2, height / 2, smurfBackgroundImage.width * backgroundScale, smurfBackgroundImage.height * backgroundScale);
 }
 
-// displayNumberSmurfCatched()
-function displayNumberSmurfCatched() {
-  // display the number of smurf catched
+// displayNumberSmurfCaught()
+function displayNumberSmurfCaught() {
+  // display the number of smurf caught
   fill(255);
   textSize(100);
-  textAlign(CENTER,CENTER)
-  text("SMURF(S) : " + smurfCatched, width/2, height/2);
-  }
+  textAlign(CENTER, CENTER)
+  text("SMURF(S) : " + smurfCaught, width / 2, height / 2);
+}
 
 // handleInput()
 //
@@ -351,13 +364,12 @@ function checkCatching() {
       // Give it full health
       smurfHealth = smurfMaxHealth;
       // Track how many smurf were eaten
-      smurfCatched = smurfCatched + 1;
+      smurfCaught = smurfCaught + 1;
 
       // Check if gargamel catched 20 smurf. If so the player won.
-      if (smurfCatched > 19) {
+      if (smurfCaught > 19) {
         game = 3
       }
-
     }
   }
 }
@@ -445,7 +457,7 @@ function drawplayerGargamel() {
 function showWinning() {
   // display the image telling the play he or she won
   image(winningImage, width / 2, height / 2, winningImage.width, winningImage.height)
-  // check if the enter bar is press
+  // check if the enter is pressed
   if (keyIsDown(ENTER)) {
     // reset the values
     restartGame();
@@ -467,12 +479,12 @@ function showGameOver() {
   textFont('MONTSERRAT')
   // Set up the text to display
   let gameOverText = "GAME OVER\n\n"; // \n means "new line"
-  gameOverText = gameOverText + "You catched " + smurfCatched + " smurf(s)\n";
+  gameOverText = gameOverText + "You caught " + smurfCaught + " smurf(s)\n";
   gameOverText = gameOverText + "before you died of hopelessness.\n"
   gameOverText = gameOverText + "PRESS ENTER TO TRY AGAIN"
   // Display it in the centre of the screen
   text(gameOverText, width / 2, height / 2);
-  // check if the enter bar is press
+  // check if the enter is pressed
   if (keyIsDown(ENTER)) {
     // reset the values
     restartGame();
@@ -481,6 +493,9 @@ function showGameOver() {
   }
 }
 
+// restartGame()
+//
+// Restart the game to its initial values
 function restartGame() {
   // player
   playerGargamelMaxHealth = 255;
@@ -490,7 +505,7 @@ function restartGame() {
   playerGargamelMaxSpeed = 4;
   setupplayerGargamel();
   // smurf
-  smurfCatched = 0;
+  smurfCaught = 0;
   smurfscale = 0.2;
   smurfMaxSpeed = 4;
   smurfMaxHealth = 100;

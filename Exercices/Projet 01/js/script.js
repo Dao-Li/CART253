@@ -19,7 +19,10 @@ It takes 20 smurfs to win. The number of smurf caught is displayed on the screen
 The smurf displayed is random between a selection of 10.
 
 There's a suspense music as a background and a awkward evil laughing
-that sounds like a growl when the player catch a smurf.
+that sounds when the player catch a smurf.
+
+To move use the key arrow. To sprint use shift, but beware of the hope that decrease faster.
+To start the game press the enter key.
 
 Includes: Physics-based movement, keyboard controls, Hope/stamina,
 random movement (Perlin noise), screen wrap.
@@ -185,11 +188,15 @@ function setupplayerGargamel() {
   imageMode(CENTER);
 }
 
-// setup the background sound, with light volume and in loop
+// setupSound()
+//
+// Setup the background sound, with light volume and in loop
 function setupSound() {
-  backgroundMusic.play();
   backgroundMusic.setVolume(0.7);
   backgroundMusic.loop();
+  // for the evil sound laugh when catching a smurf
+  // only play it in mode untilDone so it won't play again and again
+  evilLaugh.playMode('untilDone');
 }
 
 // draw()
@@ -367,9 +374,7 @@ function checkCatching() {
     // Constrain to the possible range
     smurfHope = constrain(smurfHope, 0, smurfMaxHope);
     // play an evil laugh sound, because the player is evil and happy
-    // only play it in mode untilDone so it won't play again and again
     evilLaugh.play();
-    evilLaugh.playMode('untilDone');
 
     // Make the player Gargamel a little bit bigger,
     // because his hope in his soul actually makes him bigger.
@@ -513,7 +518,9 @@ function showGameOver() {
   }
 }
 
-// function restartGame
+// restartGame ()
+//
+// Reset the values to their initial one to restart the game
 function restartGame() {
   // player
   playerGargamelMaxHope = 255;

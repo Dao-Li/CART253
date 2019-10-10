@@ -44,6 +44,8 @@ let playerGargamelMaxSpeed = 4;
 let playerGargamelHealth;
 let playerGargamelMaxHealth = 255;
 // playerGargamel image to display
+let playerGargamelLeftImage;
+let playerGargamelRightImage;
 let playerGargamelImage;
 
 // smurf (prey) position, size, velocity, noise time
@@ -125,7 +127,8 @@ function preload() {
   //
   // Gargamel image
   // https://pngimage.net/gargamel-png-5/
-  playerGargamelImage = loadImage("assets/images/gargamel.png");
+  playerGargamelLeftImage = loadImage("assets/images/gargamelLeft.png");
+  playerGargamelRightImage = loadImage("assets/images/gargamelRight.png");
   //
   // Background image
   // https://www.artstation.com/artwork/k2Og0
@@ -176,6 +179,8 @@ function setupplayerGargamel() {
   playerGargamelX = 4 * width / 5;
   playerGargamelY = height / 2;
   playerGargamelHealth = playerGargamelMaxHealth;
+  // Draw by default to the left
+  playerGargamelImage = playerGargamelLeftImage
   // Draw image from center
   imageMode(CENTER)
 }
@@ -266,6 +271,15 @@ function handleInput() {
     playerGargamelVX = 0;
   }
 
+  // Check for if the character goes left or right
+  if (keyIsDown(LEFT_ARROW)) {
+    // draw the player to the left
+    playerGargamelImage = playerGargamelLeftImage
+  } else if (keyIsDown(RIGHT_ARROW)) {
+    // draw the player to the left
+    playerGargamelImage = playerGargamelRightImage
+  }
+
   // Check for vertical movement
   if (keyIsDown(UP_ARROW)) {
     playerGargamelVY = -playerGargamelMaxSpeed;
@@ -337,7 +351,7 @@ function checkCatching() {
   // Get distance of playerGargamel to smurf
   let d = dist(playerGargamelX, playerGargamelY, smurfX, smurfY);
   // Check if it's an overlap. Addition each image * their scale and divide them by two to
-  if (d < (playerGargamelImage.width * playerGargamelscale) / 2 + (smurfImage1.width * smurfscale) / 2) {
+  if (d < (playerGargamelLeftImage.width * playerGargamelscale) / 2 + (smurfImage1.width * smurfscale) / 2) {
     // Increase the playerGargamel health, because he gains hope
     playerGargamelHealth = playerGargamelHealth + eatHealth;
     // Constrain to the possible range
@@ -441,14 +455,13 @@ function drawsmurf() {
   }
 }
 
-
 // drawplayerGargamel()
 //
-// Draw the playerGargamel with a picture of Gargamel with alpha value based on health
+// Draw the playerGargamel with a picture of Gargamel display the image with alpha value based on health
 function drawplayerGargamel() {
   tint(255, playerGargamelHealth);
-  image(playerGargamelImage, playerGargamelX, playerGargamelY,
-    playerGargamelImage.width * playerGargamelscale, playerGargamelImage.height * playerGargamelscale);
+   image(playerGargamelImage, playerGargamelX, playerGargamelY,
+    playerGargamelLeftImage.width * playerGargamelscale, playerGargamelLeftImage.height * playerGargamelscale);
 }
 
 // showWinning
@@ -456,7 +469,7 @@ function drawplayerGargamel() {
 // Display an image saying that you won!
 function showWinning() {
   // display the image telling the play he or she won
-  image(winningImage, width / 2, height / 2, winningImage.width, winningImage.height)
+  image(winningImage, width / 2, height / 2, winningImage.width, winningImage.height);
   // check if the enter is pressed
   if (keyIsDown(ENTER)) {
     // reset the values
@@ -493,9 +506,7 @@ function showGameOver() {
   }
 }
 
-// restartGame()
-//
-// Restart the game to its initial values
+// function restartGame
 function restartGame() {
   // player
   playerGargamelMaxHealth = 255;

@@ -20,7 +20,7 @@ random movement (Perlin noise), screen wrap.
 // 2 === when the game is active
 // 3 === when the player won
 // 4 === when the player lost
-let game = 2; // start the game on the instructions
+let game = 1; // start the game on the instructions
 
 // playerGargamel (player) position, size, velocity
 let playerGargamelX;
@@ -64,11 +64,15 @@ let randomSmurf;
 // Amount of health obtained per frame of "eating" (overlapping) the smurf
 let eatHealth = 10;
 // Number of smurf eaten during the game (the "score")
-let smurfEaten = 0;
+let smurfCatched = 0;
 
 // Define the background and its scale
 let smurfBackgroundImage;
 let backgroundScale = 0.75;
+// Define the instruction image
+let instructionImage;
+// Define the winning image
+let winningImage;
 
 // Audio variables
 let backgroundMusic;
@@ -118,6 +122,9 @@ function preload() {
   //
   // Instructions
   instructionImage = loadImage("assets/images/instructions.jpg");
+  //
+  // Winning image
+  winningImage = loadImage("assets/images/winning.jpg");
 }
 
 // setup()
@@ -148,7 +155,7 @@ function setupsmurf() {
   // Draw image from center
   imageMode(CENTER)
   // Choice a random smurf
-  randomSmurf = random(0,1);
+  randomSmurf = random(0, 1);
 }
 
 // setupplayerGargamel()
@@ -163,11 +170,11 @@ function setupplayerGargamel() {
 }
 
 // setup the background sound, with light volume and in loop
-function setupSound(){
+function setupSound() {
   backgroundMusic.play()
   backgroundMusic.setVolume(0.7)
   backgroundMusic.loop()
-  }
+}
 
 
 // draw()
@@ -178,9 +185,12 @@ function setupSound(){
 // displays the two agents.
 // When the game is over, shows the game over screen.
 function draw() {
-  setBackground()
 
-  if (game === 2) {
+  if (game === 1) {
+    showInstructions();
+  } else if (game === 2) {
+    displayNumberSmurfCatched()
+    setBackground()
     handleInput();
 
     movePlayerGargamel();
@@ -191,14 +201,28 @@ function draw() {
 
     drawsmurf();
     drawplayerGargamel();
-  }
-
-  else if (game === 4){
+  } else if (game === 3) {
+    showWinning();
+  } else if (game === 4) {
     showGameOver();
   }
 }
 
-// setBackground
+// showInstructions
+//
+// Introduction about the game and some instructions
+function showInstructions() {
+  // display the image show the instruction
+  image(instructionImage, width / 2, height / 2, instructionImage.width, instructionImage.height)
+  // check if the enter bar is press
+  if (keyIsDown(ENTER)) {
+    game = 2;
+  }
+}
+
+// displayNumberSmurfCatched()
+
+// setBackground()
 //
 // Set the background with a smurf background landscape
 function setBackground() {
@@ -313,14 +337,20 @@ function checkCatching() {
     // Check if the smurf died (health 0)
     if (smurfHealth === 0) {
       // Choice a random smurf
-      randomSmurf = random(0,1)
+      randomSmurf = random(0, 1)
       // Move the "new" smurf to a random position
       smurfX = random(0, width);
       smurfY = random(0, height);
       // Give it full health
       smurfHealth = smurfMaxHealth;
       // Track how many smurf were eaten
-      smurfEaten = smurfEaten + 1;
+      smurfCatched = smurfCatched + 1;
+
+      // Check if gargamel catched 20 smurf. If so the player won.
+      if (smurfCatched > 19) {
+        game = 3
+      }
+
     }
   }
 }
@@ -371,32 +401,23 @@ function drawsmurf() {
   // Each smurf has 10% chance to be displayed on the screen
   if (randomSmurf < 0.1) {
     image(smurfImage1, smurfX, smurfY, smurfImage1.width * smurfscale, smurfImage1.height * smurfscale);
-  }
-  else if (randomSmurf < 0.2) {
+  } else if (randomSmurf < 0.2) {
     image(smurfImage2, smurfX, smurfY, smurfImage1.width * smurfscale, smurfImage1.height * smurfscale);
-  }
-  else if (randomSmurf < 0.3) {
+  } else if (randomSmurf < 0.3) {
     image(smurfImage3, smurfX, smurfY, smurfImage1.width * smurfscale, smurfImage1.height * smurfscale);
-  }
-  else if (randomSmurf < 0.4) {
+  } else if (randomSmurf < 0.4) {
     image(smurfImage4, smurfX, smurfY, smurfImage1.width * smurfscale, smurfImage1.height * smurfscale);
-  }
-  else if (randomSmurf < 0.5) {
+  } else if (randomSmurf < 0.5) {
     image(smurfImage5, smurfX, smurfY, smurfImage1.width * smurfscale, smurfImage1.height * smurfscale);
-  }
-  else if (randomSmurf < 0.6) {
+  } else if (randomSmurf < 0.6) {
     image(smurfImage6, smurfX, smurfY, smurfImage1.width * smurfscale, smurfImage1.height * smurfscale);
-  }
-  else if (randomSmurf < 0.7) {
+  } else if (randomSmurf < 0.7) {
     image(smurfImage7, smurfX, smurfY, smurfImage1.width * smurfscale, smurfImage1.height * smurfscale);
-  }
-  else if (randomSmurf < 0.8) {
+  } else if (randomSmurf < 0.8) {
     image(smurfImage8, smurfX, smurfY, smurfImage1.width * smurfscale, smurfImage1.height * smurfscale);
-  }
-  else if (randomSmurf < 0.9) {
+  } else if (randomSmurf < 0.9) {
     image(smurfImage9, smurfX, smurfY, smurfImage1.width * smurfscale, smurfImage1.height * smurfscale);
-  }
-  else if (randomSmurf < 1.1) {
+  } else if (randomSmurf < 1.1) {
     image(smurfImage10, smurfX, smurfY, smurfImage1.width * smurfscale, smurfImage1.height * smurfscale);
   }
 }
@@ -415,7 +436,15 @@ function drawplayerGargamel() {
 //
 // Display an image saying that you won!
 function showWinning() {
-  //
+  // display the image telling the play he or she won
+  image(winningImage, width / 2, height / 2, winningImage.width, winningImage.height)
+  // check if the enter bar is press
+  if (keyIsDown(ENTER)) {
+    // reset the values
+    restartGame();
+    // restart the game
+    game = 2;
+  }
 }
 
 // showGameOver()
@@ -430,10 +459,33 @@ function showGameOver() {
   fill(255);
   textFont('MONTSERRAT')
   // Set up the text to display
-  let gameOverText = "GAME OVER\n"; // \n means "new line"
-  gameOverText = gameOverText + "You catched " + smurfEaten + " smurf(s)\n";
+  let gameOverText = "GAME OVER\n\n"; // \n means "new line"
+  gameOverText = gameOverText + "You catched " + smurfCatched + " smurf(s)\n";
   gameOverText = gameOverText + "before you died of hopelessness.\n"
-  gameOverText = gameOverText + "Unfortunately, you \n"
+  gameOverText = gameOverText + "PRESS ENTER TO TRY AGAIN"
   // Display it in the centre of the screen
   text(gameOverText, width / 2, height / 2);
+  // check if the enter bar is press
+  if (keyIsDown(ENTER)) {
+    // reset the values
+    restartGame();
+    // restart the game
+    game = 2;
+  }
+}
+
+function restartGame() {
+  // player
+  playerGargamelMaxHealth = 255;
+  playerGargamelscale = 0.3;
+  playerGargamelVX = 0;
+  playerGargamelVY = 0;
+  playerGargamelMaxSpeed = 4;
+  setupplayerGargamel();
+  // smurf
+  smurfCatched = 0;
+  smurfscale = 0.2;
+  smurfMaxSpeed = 4;
+  smurfMaxHealth = 100;
+  setupsmurf();
 }

@@ -94,6 +94,9 @@ let winningImage;
 let backgroundMusic;
 let evilLaugh;
 
+// Display a rectangle that show the hope left instead of numbers
+let rectangleHope;
+
 // Preload
 //
 //add preload function to load the assets images and sound
@@ -190,12 +193,13 @@ function setupplayerGargamel() {
 
 // setupSound()
 //
-// Setup the background sound, with light volume and in loop
+// Setup the background sound, with light volume for background
+// and play once at a time for background music and evilLaugh
 function setupSound() {
+  // Make the background music be a little bit more quiet
   backgroundMusic.setVolume(0.7);
-  backgroundMusic.loop();
-  // for the evil sound laugh when catching a smurf
   // only play it in mode untilDone so it won't play again and again
+  backgroundMusic.playMode('untilDone');
   evilLaugh.playMode('untilDone');
 }
 
@@ -214,7 +218,8 @@ function draw() {
     showInstructions();
   } else if (game === 2) {
     setBackground()
-    displayNumberAndText()
+    playBackgroundMusic()
+    displaySmurfAndHopeNumber()
     handleInput();
 
     movePlayerGargamel();
@@ -255,20 +260,28 @@ function setBackground() {
   image(smurfBackgroundImage, width / 2, height / 2, smurfBackgroundImage.width * backgroundScale, smurfBackgroundImage.height * backgroundScale);
 }
 
-// displayNumberAndText()
+function playBackgroundMusic() {
+  backgroundMusic.loop();
+}
+
+// displaySmurfAndHopeNumber()
 //
-// A function that display the number of hope left and the number of smurf caught
-function displayNumberAndText() {
-  // Define the properties of the text
+// A function that display the number of smurf caught and the number of hope left
+function displaySmurfAndHopeNumber() {
+  // Define the properties of the text for the smurf
   fill(255);
   textSize(50);
   textAlign(CENTER, CENTER);
-  // display the number of smurf caught
-  let numberAndText = smurfCaught + " SMURF(S) CAUGHT\n"
-  // display the number of hope left
-  numberAndText = numberAndText + "HOPE : " + playerGargamelHope
-  // display the text
+  // Define the number of smurf caught at the center of the screen
+  let numberAndText = "SMURF(S) : " + smurfCaught
+  // Display the text
   text(numberAndText, width / 2, height / 2);
+
+  // display the number of hope left in a rectangle
+  // Define the Start with yellow and finish with red;
+  fill(playerGargamelHope*20, playerGargamelHope, 0);
+  // Draw from the top right of the screen
+  rectangleHope = rect(width/1.7, height / 20, playerGargamelHope, height/15);
 }
 
 // handleInput()

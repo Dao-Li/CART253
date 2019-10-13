@@ -61,14 +61,19 @@ let rightPaddle = {
   score: 0
 }
 
-// A variable to hold the beep sound we will play on bouncing
+// A variable to hold the sounds in the game
 let beepSFX;
+let backgroundMusic;
 
 // preload()
 //
-// Loads the beep audio for the sound of bouncing
+// Loads the beep audio for the sound of bouncing and background music
 function preload() {
   beepSFX = new Audio("assets/sounds/beep.wav");
+
+  // https://freesound.org/people/Greek555/sounds/487759/
+  backgroundMusic = loadSound("assets/sounds/backgroundMusic.mp3")
+
 }
 
 // setup()
@@ -108,6 +113,8 @@ function draw() {
   displayScoreBackground();
 
   if (playing) {
+    // set up the background music of the game
+    setupBackgroundMusic();
     // If the game is in play, we handle input and move the elements around
     handleInput(leftPaddle);
     handleInput(rightPaddle);
@@ -161,6 +168,15 @@ rect(width/2,0,width/2,height);
 // Fill other from in black
 fill(0);
 rectMode(CENTER);
+}
+
+// setupBackgroundMusic()
+//
+// Set up the background Music that plays when the game is active
+function setupBackgroundMusic() {
+  // play on loop and only once at a time
+  backgroundMusic.loop();
+  backgroundMusic.playMode("untilDone")
 }
 
 // handleInput()
@@ -291,8 +307,11 @@ function displayBall() {
 // Sets the starting position and velocity of the ball
 function resetBall() {
   // Initialise the ball's position and velocity
+  // Make the ball start at the center of the screen
   ball.x = width / 2;
   ball.y = height / 2;
+
+  //
   ball.vx = ball.speed;
   ball.vy = ball.speed;
 }

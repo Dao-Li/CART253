@@ -79,7 +79,6 @@ function preload() {
 function setup() {
   // Create canvas and set drawing modes
   createCanvas(640, 480);
-  rectMode(CENTER);
   noStroke();
   fill(fgColor);
 
@@ -105,8 +104,8 @@ function setupPaddles() {
 // Calls the appropriate functions to run the game
 // See how tidy it looks?!
 function draw() {
-  // Fill the background
-  background(bgColor);
+  // Fill the background with an option to update de score
+  displayScoreBackground();
 
   if (playing) {
     // If the game is in play, we handle input and move the elements around
@@ -139,6 +138,29 @@ function draw() {
   displayPaddle(leftPaddle);
   displayPaddle(rightPaddle);
   displayBall();
+}
+
+// displayScoreBackground()
+//
+// change the color according to the score
+function displayScoreBackground() {
+// Draw from the Corner
+rectMode(CORNER);
+// Left side
+// Start with blue color and become toward pink with more points
+fill(25 * leftPaddle.score,0,255);
+// Display on the left side of the screen
+rect(0,0,width/2,height);
+
+// Right side
+// Start with red color and become toward yellow with more points
+fill(255,25 * rightPaddle.score,0);
+// Display on the right side of the screen
+rect(width/2,0,width/2,height);
+
+// Fill other from in black
+fill(0);
+rectMode(CENTER);
 }
 
 // handleInput()
@@ -190,13 +212,11 @@ function ballIsOutOfBounds() {
     // add score to the left side
     rightPaddle.score += 1
     return true;
-
   }
   else if (ball.x > width) {
     leftPaddle.score += 1
     return true;
   }
-
   else {
     return false;
   }

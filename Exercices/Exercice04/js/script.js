@@ -223,13 +223,15 @@ function updateBall() {
 // Checks if the ball has gone off the left or right
 // Returns true if so, false otherwise
 function ballIsOutOfBounds() {
-  // Check for ball going off the sides
+  // Check for ball going of the left side
   if (ball.x < 0) {
-    // add score to the left side
+    // add score to the right side
     rightPaddle.score += 1
     return true;
   }
+  // Check for ball going of the right side
   else if (ball.x > width) {
+    // add score to the left side
     leftPaddle.score += 1
     return true;
   }
@@ -300,20 +302,35 @@ function displayPaddle(paddle) {
 function displayBall() {
   // Draw the ball
   rect(ball.x, ball.y, ball.size, ball.size);
+  // When it start the ball should go to the right
 }
 
 // resetBall()
 //
 // Sets the starting position and velocity of the ball
 function resetBall() {
+  // Make the ball goes to the side that get the last win point
+   if (ball.x < 0) {
+     // The ball goes off to the left so the ball should go to the right and be random
+     ball.vx = random(ball.speed/2,ball.speed);
+   }
+   else if (ball.x > width) {
+     // The ball goes off to the right so the ball should go to the left and be random
+     ball.vx = random(-ball.speed,-ball.speed/2);
+   }
+   else {
+     // The ball should be random between left or right at start
+     let ballSpeed = [-ball.speed, ball.speed];
+     ball.vx = random(ballSpeed);
+   }
+
   // Initialise the ball's position and velocity
   // Make the ball start at the center of the screen
   ball.x = width / 2;
   ball.y = height / 2;
 
-  //
-  ball.vx = ball.speed;
-  ball.vy = ball.speed;
+  // The ball should have a random velocity
+  ball.vy = random(-ball.speed * 1.5,ball.speed * 1.5);
 }
 
 // displayStartMessage()

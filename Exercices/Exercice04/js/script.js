@@ -65,15 +65,26 @@ let rightPaddle = {
 let beepSFX;
 let backgroundMusic;
 
+// A variable to hold the images in the game
+let scoreInfoImage = {
+  left: 0,
+  right: 0
+}
+
 // preload()
 //
 // Loads the beep audio for the sound of bouncing and background music
 function preload() {
-  beepSFX = new Audio("assets/sounds/beep.wav");
 
+  // sounds
+  // sound when the ball is bouncing on a paddle
+  beepSFX = new Audio("assets/sounds/beep.wav");
   // https://freesound.org/people/Greek555/sounds/487759/
   backgroundMusic = loadSound("assets/sounds/backgroundMusic.mp3")
 
+  // images
+  scoreInfoImage.left = loadImage("assets/images/LeftScoreInfo.png")
+  scoreInfoImage.right = loadImage("assets/images/RightScoreInfo.png")
 }
 
 // setup()
@@ -83,7 +94,7 @@ function preload() {
 // and velocities.
 function setup() {
   // Create canvas and set drawing modes
-  createCanvas(640, 480);
+  createCanvas(1000, 500);
   noStroke();
   fill(fgColor);
 
@@ -111,6 +122,7 @@ function setupPaddles() {
 function draw() {
   // Fill the background with an option to update de score
   displayScoreBackground();
+  displayInfoScoreImages();
 
   if (playing) {
     // set up the background music of the game
@@ -135,8 +147,7 @@ function draw() {
       // This is where we would likely count points, depending on which side
       // the ball went off...
     }
-  }
-  else {
+  } else {
     // Otherwise we display the message to start the game
     displayStartMessage();
   }
@@ -149,26 +160,43 @@ function draw() {
 
 // displayScoreBackground()
 //
-// change the color according to the score
+// Change the color according to the score
 function displayScoreBackground() {
-// Draw from the Corner
-rectMode(CORNER);
-// Left side
-// Start with blue color and become toward pink with more points
-fill(25 * leftPaddle.score,0,255);
-// Display on the left side of the screen
-rect(0,0,width/2,height);
+  // Draw from the Corner
+  rectMode(CORNER);
+  // Left side
+  // Start with blue color and become toward pink with more points
+  fill(17 * leftPaddle.score, 0, 255);
+  // Display on the left side of the screen
+  rect(0, 0, width / 2, height);
 
-// Right side
-// Start with red color and become toward yellow with more points
-fill(255,25 * rightPaddle.score,0);
-// Display on the right side of the screen
-rect(width/2,0,width/2,height);
+  // Right side
+  // Start with red color and become toward yellow with more points
+  fill(255, 17 * rightPaddle.score, 0);
+  // Display on the right side of the screen
+  rect(width / 2, 0, width / 2, height);
 
-// Fill other from in black
-fill(0);
-rectMode(CENTER);
+  // Fill other forms in black
+  fill(0);
+  rectMode(CENTER);
 }
+
+// displayInfoScoreImages()
+//
+// A function to help the player to keep track of their score
+function displayInfoScoreImages() {
+  // Display the images from the center
+  imageMode(CENTER);
+
+  // Left side
+  // Display the image at the top left of the screen
+  image(scoreInfoImage.left, 1/4 * width, height / 10);
+
+  // Right side
+  // Display the image at the top right of the screen
+  image(scoreInfoImage.right, 3/4 * width, height / 10);
+}
+
 
 // setupBackgroundMusic()
 //
@@ -194,8 +222,7 @@ function handleInput(paddle) {
   else if (keyIsDown(paddle.downKey)) {
     // Move down
     paddle.vy = paddle.speed;
-  }
-  else {
+  } else {
     // Otherwise stop moving
     paddle.vy = 0;
   }
@@ -234,8 +261,7 @@ function ballIsOutOfBounds() {
     // add score to the left side
     leftPaddle.score += 1
     return true;
-  }
-  else {
+  } else {
     return false;
   }
 }
@@ -310,20 +336,18 @@ function displayBall() {
 // Sets the starting position and velocity of the ball
 function resetBall() {
   // Make the ball goes to the side that get the last win point
-   if (ball.x < 0) {
-     // The ball goes off to the left so the ball should go to the right and be random
-     ball.vx = random(ball.speed * 1.5 ,ball.speed);
-   }
-   else if (ball.x > width) {
-     // The ball goes off to the right so the ball should go to the left and be random
-     ball.vx = random(-ball.speed,-ball.speed * 1.5);
-   }
-   else {
-     // The ball should be random between left or right at start using an array
-     // I want the speed to be the same
-     let ballSpeed = [-ball.speed, ball.speed];
-     ball.vx = random(ballSpeed);
-   }
+  if (ball.x < 0) {
+    // The ball goes off to the left so the ball should go to the right and be random
+    ball.vx = random(ball.speed * 1.5, ball.speed);
+  } else if (ball.x > width) {
+    // The ball goes off to the right so the ball should go to the left and be random
+    ball.vx = random(-ball.speed, -ball.speed * 1.5);
+  } else {
+    // The ball should be random between left or right at start using an array
+    // I want the speed to be the same
+    let ballSpeed = [-ball.speed, ball.speed];
+    ball.vx = random(ballSpeed);
+  }
 
   // Initialise the ball's position and velocity
   // Make the ball start at the center of the screen
@@ -334,7 +358,7 @@ function resetBall() {
   // Use array to have choice between -ball.speed * 2 to ball speed * 2, but
   // without the number between -ball.speed/2 and ball.speed/2,
   // because the ball goes to much straight
-  let speedRandom = [random(-ball.speed * 1.2, -ball.speed / 2),random(ball.speed / 2, ball.speed * 1.2)]
+  let speedRandom = [random(-ball.speed * 1.2, -ball.speed / 2), random(ball.speed / 2, ball.speed * 1.2)]
   ball.vy = random(speedRandom);
   console.log(ball.vx, ball.vy)
 }

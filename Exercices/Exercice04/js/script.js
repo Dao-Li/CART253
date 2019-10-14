@@ -312,14 +312,15 @@ function resetBall() {
   // Make the ball goes to the side that get the last win point
    if (ball.x < 0) {
      // The ball goes off to the left so the ball should go to the right and be random
-     ball.vx = random(ball.speed/2,ball.speed);
+     ball.vx = random(ball.speed * 1.5 ,ball.speed);
    }
    else if (ball.x > width) {
      // The ball goes off to the right so the ball should go to the left and be random
-     ball.vx = random(-ball.speed,-ball.speed/2);
+     ball.vx = random(-ball.speed,-ball.speed * 1.5);
    }
    else {
-     // The ball should be random between left or right at start
+     // The ball should be random between left or right at start using an array
+     // I want the speed to be the same
      let ballSpeed = [-ball.speed, ball.speed];
      ball.vx = random(ballSpeed);
    }
@@ -330,7 +331,12 @@ function resetBall() {
   ball.y = height / 2;
 
   // The ball should have a random velocity
-  ball.vy = random(-ball.speed * 1.5,ball.speed * 1.5);
+  // Use array to have choice between -ball.speed * 2 to ball speed * 2, but
+  // without the number between -ball.speed/2 and ball.speed/2,
+  // because the ball goes to much straight
+  let speedRandom = [random(-ball.speed * 1.2, -ball.speed / 2),random(ball.speed / 2, ball.speed * 1.2)]
+  ball.vy = random(speedRandom);
+  console.log(ball.vx, ball.vy)
 }
 
 // displayStartMessage()

@@ -3,8 +3,14 @@
 // Pong
 // Modified by Dao-Li leboeuf Roy
 //
-// A "simple" implementation of Pong with no scoring system
-// just the ability to play the game with the keyboard.
+// A "simple" implementation of Pong. The score is displayed according to the background
+// color of each side. It changes color with each point. The left side starts
+// with blue and wins when it gets one point afet pink, and the right side starts
+// at red and wins when it gets one point after the yellow.
+
+// The player who gets 16 points first win. 
+
+// The ball is the chromatic circle to match the idea of colors.
 //
 // Up and down keys control the right hand paddle, W and S keys control
 // the left hand paddle
@@ -139,8 +145,7 @@ function draw() {
   if (gameState === 'Start') {
     // Otherwise we display the message to start the game
     displayStartMessage();
-  }
-  else if (gameState === 'Playing') {
+  } else if (gameState === 'Playing') {
     // set up the background music of the game
     setupBackgroundMusic();
     // If the game is in play, we handle input and move the elements around
@@ -175,10 +180,10 @@ function draw() {
 
   if (gameState === 'LeftWin') {
     showLeftWinning();
-    }
+  }
   if (gameState === 'RightWin') {
     showRightWinning();
-    }
+  }
 }
 
 // displayScoreBackground()
@@ -213,11 +218,11 @@ function displayInfoScoreImages() {
 
   // Left side
   // Display the image at the top left of the screen
-  image(scoreInfoImage.left, 1/4 * width, height / 10);
+  image(scoreInfoImage.left, 1 / 4 * width, height / 10);
 
   // Right side
   // Display the image at the top right of the screen
-  image(scoreInfoImage.right, 3/4 * width, height / 10);
+  image(scoreInfoImage.right, 3 / 4 * width, height / 10);
 }
 
 // displayStartMessage()
@@ -231,7 +236,7 @@ function displayStartMessage() {
   // but not exactly, because I want the ball to be in the center of the 'o'
   text("CLICK TO START", width / 2 - 12, height / 2 + 5);
   pop();
- }
+}
 
 // setupBackgroundMusic()
 //
@@ -284,12 +289,12 @@ function updateBall() {
 //
 // Check if a player won
 function checkWinning() {
-if (rightPaddle.score > 15) {
-  gameState = 'RightWin';
- }
-if (leftPaddle.score > 15) {
-  gameState = 'LeftWin';
- }
+  if (rightPaddle.score > 15) {
+    gameState = 'RightWin';
+  }
+  if (leftPaddle.score > 15) {
+    gameState = 'LeftWin';
+  }
 }
 
 // ballIsOutOfBounds()
@@ -376,7 +381,7 @@ function displayPaddle(paddle) {
 // Draws the ball on screen as a square
 function displayBall() {
   // Draw the ball
-  image(ball.image,ball.x,ball.y, ball.image.width * ball.scale, ball.image.height * ball.scale)
+  image(ball.image, ball.x, ball.y, ball.image.width * ball.scale, ball.image.height * ball.scale)
   // When it start the ball should go to the right
 }
 
@@ -416,19 +421,19 @@ function resetBall() {
 // Display an image that tells the left player won
 function showLeftWinning() {
   image(endingImage.leftWin, width / 2, height / 2);
-  }
+}
 
 // showRightWinning
 //
 // Display an image that tells the right player won
 function showRightWinning() {
   image(endingImage.rightWin, width / 2, height / 2);
-  }
+}
 
 // mousePressed()
 //
 // Here to require a click to start playing the game
 // Which will help us be allowed to play audio in the browser
 function mousePressed() {
-   gameState = 'Playing';
+  gameState = 'Playing';
 }

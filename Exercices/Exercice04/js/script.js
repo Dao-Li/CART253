@@ -9,8 +9,8 @@
 // Up and down keys control the right hand paddle, W and S keys control
 // the left hand paddle
 
-// Whether the game has started
-let playing = false;
+// Defining the game state
+let gameState = 'Start';
 
 // Game colors (using hexadecimal)
 let bgColor = 0;
@@ -20,13 +20,16 @@ let fgColor = 255;
 
 // A ball object with the properties of
 // position, size, velocity, and speed
+// And also the image associated to
 let ball = {
   x: 0,
   y: 0,
   size: 20,
   vx: 0,
   vy: 0,
-  speed: 5
+  speed: 5,
+  image: 0,
+  scale: 0.05
 }
 
 // PADDLES
@@ -71,13 +74,18 @@ let scoreInfoImage = {
   right: 0
 }
 
+let endingImage = {
+  leftWin: 0,
+  rightWin: 0
+}
+
 // preload()
 //
 // Loads the beep audio for the sound of bouncing and background music
 function preload() {
 
   // sounds
-  // sound when the ball is bouncing on a paddle
+  // sound when the ball is bouncing on a paddle or on the side
   beepSFX = new Audio("assets/sounds/beep.wav");
   // https://freesound.org/people/Greek555/sounds/487759/
   backgroundMusic = loadSound("assets/sounds/backgroundMusic.mp3")
@@ -85,6 +93,10 @@ function preload() {
   // images
   scoreInfoImage.left = loadImage("assets/images/LeftScoreInfo.png")
   scoreInfoImage.right = loadImage("assets/images/RightScoreInfo.png")
+  endingImage.leftWin = loadImage("assets/images/LeftWin.jpg")
+  endingImage.rightWin = loadImage("assets/images/RightWin.jpg")
+  //https://fr.wix.com/blog/amp/2016/08/01/la-theorie-des-couleurs-appliquee-a-votre-site-internet
+  ball.image = loadImage("assets/images/ChromaticCircle.png")
 }
 
 // setup()
@@ -124,7 +136,11 @@ function draw() {
   displayScoreBackground();
   displayInfoScoreImages();
 
-  if (playing) {
+  if (gameState === 'Start') {
+    // Otherwise we display the message to start the game
+    displayStartMessage();
+  }
+  else if (gameState === 'Playing') {
     // set up the background music of the game
     setupBackgroundMusic();
     // If the game is in play, we handle input and move the elements around
@@ -137,6 +153,7 @@ function draw() {
     checkBallWallCollision();
     checkBallPaddleCollision(leftPaddle);
     checkBallPaddleCollision(rightPaddle);
+    checkWinning();
 
     // Check if the ball went out of bounds and respond if so
     // (Note how we can use a function that returns a truth value
@@ -147,15 +164,21 @@ function draw() {
       // This is where we would likely count points, depending on which side
       // the ball went off...
     }
-  } else {
-    // Otherwise we display the message to start the game
-    displayStartMessage();
   }
 
   // We always display the paddles and ball so it looks like Pong!
+  // Except when someone win
   displayPaddle(leftPaddle);
   displayPaddle(rightPaddle);
   displayBall();
+
+
+  if (gameState === 'LeftWin') {
+    showLeftWinning();
+    }
+  if (gameState === 'RightWin') {
+    showRightWinning();
+    }
 }
 
 // displayScoreBackground()
@@ -166,7 +189,7 @@ function displayScoreBackground() {
   rectMode(CORNER);
   // Left side
   // Start with blue color and become toward pink with more points
-  fill(17 * leftPaddle.score, 0, 255);
+  fill(17 * leftPaddle.score, 0, 255, 175);
   // Display on the left side of the screen
   rect(0, 0, width / 2, height);
 
@@ -197,6 +220,18 @@ function displayInfoScoreImages() {
   image(scoreInfoImage.right, 3/4 * width, height / 10);
 }
 
+// displayStartMessage()
+//
+// Shows a message about how to start the game
+function displayStartMessage() {
+  push();
+  textAlign(CENTER, CENTER);
+  textSize(60);
+  // The text should be approximately at the center of the screen
+  // but not exactly, because I want the ball to be in the center of the 'o'
+  text("CLICK TO START", width / 2 - 12, height / 2 + 5);
+  pop();
+ }
 
 // setupBackgroundMusic()
 //
@@ -245,6 +280,18 @@ function updateBall() {
   ball.y += ball.vy;
 }
 
+// checkWinning()
+//
+// Check if a player won
+function checkWinning() {
+if (rightPaddle.score > 15) {
+  gameState = 'RightWin';
+ }
+if (leftPaddle.score > 15) {
+  gameState = 'LeftWin';
+ }
+}
+
 // ballIsOutOfBounds()
 //
 // Checks if the ball has gone off the left or right
@@ -288,6 +335,8 @@ function checkBallWallCollision() {
 function checkBallPaddleCollision(paddle) {
   // VARIABLES FOR CHECKING COLLISIONS
 
+  // the ball size equal the width of the image of the ball
+  ball.size = ball.image.width * ball.scale
   // We will calculate the top, bottom, left, and right of the
   // paddle and the ball to make our conditionals easier to read...
   let ballTop = ball.y - ball.size / 2;
@@ -327,7 +376,7 @@ function displayPaddle(paddle) {
 // Draws the ball on screen as a square
 function displayBall() {
   // Draw the ball
-  rect(ball.x, ball.y, ball.size, ball.size);
+  image(ball.image,ball.x,ball.y, ball.image.width * ball.scale, ball.image.height * ball.scale)
   // When it start the ball should go to the right
 }
 
@@ -360,24 +409,26 @@ function resetBall() {
   // because the ball goes to much straight
   let speedRandom = [random(-ball.speed * 1.2, -ball.speed / 2), random(ball.speed / 2, ball.speed * 1.2)]
   ball.vy = random(speedRandom);
-  console.log(ball.vx, ball.vy)
 }
 
-// displayStartMessage()
+// showLeftWinning
 //
-// Shows a message about how to start the game
-function displayStartMessage() {
-  push();
-  textAlign(CENTER, CENTER);
-  textSize(32);
-  text("CLICK TO START", width / 2, height / 2);
-  pop();
-}
+// Display an image that tells the left player won
+function showLeftWinning() {
+  image(endingImage.leftWin, width / 2, height / 2);
+  }
+
+// showRightWinning
+//
+// Display an image that tells the right player won
+function showRightWinning() {
+  image(endingImage.rightWin, width / 2, height / 2);
+  }
 
 // mousePressed()
 //
 // Here to require a click to start playing the game
 // Which will help us be allowed to play audio in the browser
 function mousePressed() {
-  playing = true;
+   gameState = 'Playing';
 }
